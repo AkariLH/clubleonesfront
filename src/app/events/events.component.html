@@ -1,0 +1,11 @@
+<div class="events-container">
+    <div class="calendar-section">
+      <app-events-calendar
+        [events]="events"
+        (dateSelected)="onDateSelected($event)"
+      ></app-events-calendar>
+    </div>
+    <div class="event-details-section">
+      <app-event-details [events]="selectedEvents"></app-event-details>
+    </div>
+  </div>

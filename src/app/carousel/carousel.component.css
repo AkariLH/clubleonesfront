@@ -1,0 +1,125 @@
+.carousel {
+  position: relative;
+  overflow: hidden;
+  width: 80%; /* Ajuste relativo para adaptabilidad */
+  max-width: 1200px; /* Ancho máximo en pantallas grandes */
+  height: 60vh; /* Incrementa la altura relativa */
+  margin: 0 auto; /* Centrado horizontal */
+  top: 50%; /* Centrado vertical */
+  transform: translateY(10%); /* Asegura el centrado vertical */
+  border-radius: 10px; /* Bordes redondeados para un diseño moderno */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombras */
+}
+
+
+.carousel-item {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item.active {
+  display: block;
+  animation: fadeIn 1s ease;
+}
+
+.carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.carousel-text {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 1.2rem; /* Ajustable para diferentes tamaños de texto */
+}
+
+/* Botones de navegación */
+button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #FFD700;
+  color: #000000;
+  border: none;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+button.prev {
+  left: 15px; 
+}
+
+button.next {
+  right: 15px;
+}
+
+button:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.carousel-indicators .indicator {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border: 2px solid #FFD700;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-indicators .indicator.active {
+  background: #FFD700;
+}
+
+/* Media Queries para Adaptabilidad */
+@media (max-width: 768px) {
+  .carousel {
+    width: 90%; /* Más pequeño en pantallas medianas */
+    height: 40vh; /* Reduce la altura */
+  }
+
+  button {
+    padding: 10px; /* Botones más pequeños */
+  }
+
+  .carousel-text {
+    font-size: 1rem; /* Reduce el texto */
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    width: 100%; /* Usa el ancho completo en pantallas pequeñas */
+    height: 35vh; /* Altura más reducida */
+  }
+
+  .carousel-text {
+    font-size: 0.9rem; /* Texto aún más pequeño */
+  }
+
+  button {
+    padding: 8px;
+  }
+}

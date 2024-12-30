@@ -1,0 +1,16 @@
+<div class="cards">
+  <div class="card" *ngFor="let evento of eventos">
+    <div class="card-header">
+      <h3>{{ evento.nombre }}</h3>
+      <span class="status {{ evento.estado | lowercase }}">{{ evento.estado }}</span>
+    </div>
+    <div class="card-content">
+      <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+      <p><strong>Entrenador:</strong> {{ evento.entrenador }}</p>
+    </div>
+    <div class="card-actions">
+      <button class="btn-secondary">Editar</button>
+      <button class="btn-danger">Eliminar</button>
+    </div>
+  </div>
+</div>

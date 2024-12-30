@@ -1,0 +1,91 @@
+<div class="form-container">
+    <h2>Registro de Atletas</h2>
+    <form [formGroup]="athleteForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" formControlName="nombre" />
+        <small *ngIf="athleteForm.get('nombre')?.invalid && athleteForm.get('nombre')?.touched">
+          El nombre es obligatorio y debe tener al menos 3 caracteres.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="apellidoPaterno">Apellido Paterno</label>
+        <input id="apellidoPaterno" type="text" formControlName="apellidoPaterno" />
+        <small *ngIf="athleteForm.get('apellidoPaterno')?.invalid && athleteForm.get('apellidoPaterno')?.touched">
+          El apellido paterno es obligatorio y debe tener al menos 3 caracteres.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="apellidoMaterno">Apellido Materno</label>
+        <input id="apellidoMaterno" type="text" formControlName="apellidoMaterno" />
+        <small *ngIf="athleteForm.get('apellidoMaterno')?.invalid && athleteForm.get('apellidoMaterno')?.touched">
+          El apellido materno es obligatorio y debe tener al menos 3 caracteres.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento" />
+        <small *ngIf="athleteForm.get('fechaNacimiento')?.invalid && athleteForm.get('fechaNacimiento')?.touched">
+          La fecha de nacimiento es obligatoria.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="sexo">Sexo</label>
+        <select id="sexo" formControlName="sexo">
+          <option value="" disabled selected>Selecciona tu sexo</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
+        <small *ngIf="athleteForm.get('sexo')?.invalid && athleteForm.get('sexo')?.touched">
+          El sexo es obligatorio.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="correo">Correo Electrónico</label>
+        <input id="correo" type="email" formControlName="correo" />
+        <small *ngIf="athleteForm.get('correo')?.invalid && athleteForm.get('correo')?.touched">
+          El correo es obligatorio y debe ser válido.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input id="contraseña" type="password" formControlName="contraseña" />
+        <small *ngIf="athleteForm.get('contraseña')?.invalid && athleteForm.get('contraseña')?.touched">
+          La contraseña es obligatoria y debe tener al menos 8 caracteres.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" formControlName="telefono" />
+        <small *ngIf="athleteForm.get('telefono')?.invalid && athleteForm.get('telefono')?.touched">
+          El teléfono debe contener 10 dígitos.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="peso">Peso (kg)</label>
+        <input id="peso" type="number" step="0.1" formControlName="peso" />
+        <small *ngIf="athleteForm.get('peso')?.invalid && athleteForm.get('peso')?.touched">
+          El peso debe estar entre 30 y 200 kg.
+        </small>
+      </div>
+  
+      <div class="form-group">
+        <label for="estatura">Estatura (m)</label>
+        <input id="estatura" type="number" step="0.01" formControlName="estatura" />
+        <small *ngIf="athleteForm.get('estatura')?.invalid && athleteForm.get('estatura')?.touched">
+          La estatura debe estar entre 1 y 2.5 metros.
+        </small>
+      </div>
+  
+      <button type="submit" [disabled]="athleteForm.invalid">Registrar</button>
+    </form>
+  </div>
+  

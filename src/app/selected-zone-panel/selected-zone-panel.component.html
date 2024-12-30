@@ -1,0 +1,9 @@
+<div class="selected-zone-panel" [class.active]="selectedZone">
+    <h3 *ngIf="selectedZone; else noZoneSelected">
+      Zona Seleccionada: {{ selectedZone }}
+    </h3>
+    <ng-template #noZoneSelected>
+      <p>Haz clic en una zona para seleccionarla.</p>
+    </ng-template>
+  </div>
+  

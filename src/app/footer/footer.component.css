@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  background-color: #000;
+  color: #fff;
+  padding: 8px 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.app-footer {
+  background-color: #000000;
+  color: #ffffff; 
+  text-align: center;
+  padding: 6px 15px; /* Reduce el padding */
+  font-size: 14px; /* Reduce el tamaño de la fuente */
+  box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Evita que el footer se comprima */
+}
+
+.app-footer a {
+  text-decoration: none;
+  color: #ffffff;
+  margin: 0 8px; /* Reduce el margen entre los enlaces */
+  transition: color 0.3s ease;
+}
+
+.app-footer a:hover {
+  color: #FFD700; 
+}

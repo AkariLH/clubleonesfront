@@ -1,0 +1,15 @@
+<div class="cards">
+  <div class="card" *ngFor="let usuario of usuarios">
+    <div class="card-header">
+      <h3>{{ usuario.nombre }}</h3>
+      <span class="role {{ usuario.rol | lowercase }}">{{ usuario.rol }}</span>
+    </div>
+    <div class="card-content">
+      <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+    </div>
+    <div class="card-actions">
+      <button class="btn-secondary">Editar</button>
+      <button class="btn-danger">Eliminar</button>
+    </div>
+  </div>
+</div>

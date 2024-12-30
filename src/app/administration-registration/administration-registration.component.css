@@ -1,0 +1,62 @@
+/* Contenedor del formulario */
+.form-container {
+    background-color: #f9f9f9; /* Fondo claro */
+    padding: 20px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    max-width: 600px; /* Ancho máximo */
+    margin: 0 auto; /* Centrado */
+  }
+  
+  /* Etiquetas */
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: #333; /* Texto oscuro */
+  }
+  
+  /* Campos de entrada y selección */
+  input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 1em; /* Tamaño del texto */
+    box-sizing: border-box;
+  }
+  
+  /* Botón */
+  button {
+    background-color: #ffd700; /* Amarillo similar al resto de tu diseño */
+    color: #000; /* Texto negro */
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover en el botón */
+  button:hover {
+    background-color: #f0c400; /* Amarillo más oscuro */
+  }
+  
+  /* Mensajes de error */
+  .error-text {
+    color: #dc3545; /* Rojo estándar */
+    font-size: 0.8em; /* Texto pequeño */
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Responsividad */
+  @media screen and (max-width: 768px) {
+    .form-container {
+      padding: 15px;
+      width: 90%; /* Ajuste para pantallas pequeñas */
+    }
+  }
+  

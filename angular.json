@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ClubDeLeones": {
+    "club-de-leones": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -21,10 +21,8 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.css"
@@ -59,10 +57,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ClubDeLeones:build:production"
+              "buildTarget": "club-de-leones:build:production"
             },
             "development": {
-              "buildTarget": "ClubDeLeones:build:development"
+              "buildTarget": "club-de-leones:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,10 +77,8 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.css"

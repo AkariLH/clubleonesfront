@@ -1,0 +1,122 @@
+<div class="form-container">
+  <h2>Crear Evento Deportivo</h2>
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label>Nombre del Evento:</label>
+      <input formControlName="nombre" type="text" />
+      <div *ngIf="eventForm.get('nombre')?.hasError('required') && eventForm.get('nombre')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        El nombre del evento es obligatorio.
+      </div>
+    </div>
+    
+    <div>
+      <label>Tipo de Evento:</label>
+      <select [(ngModel)]="tipoSeleccionado" (change)="manejarSeleccion()">
+        <option *ngFor="let tipo of tiposPredeterminados" [value]="tipo">{{ tipo }}</option>
+      </select>
+      
+    </div>
+    <!--Modal-->
+    <button
+      type="button"
+      class="btn-agregar"
+      (click)="abrirFormulario()"
+    >
+      Agregar otro tipo de evento
+    </button>
+    <app-add-event-type
+      *ngIf="formularioVisible"
+      (tipoAgregado)="manejarTipoAgregado($event)"
+      (cerrar)="cerrarFormulario()"
+    ></app-add-event-type>   
+    <div>
+      <label>Entrenador Asignado:</label>
+      <select formControlName="entrenadorAsignado">
+        <option value="" disabled selected>Selecciona un entrenador</option>
+        <option *ngFor="let entrenador of entrenadores" [value]="entrenador">{{ entrenador }}</option>
+      </select>
+      <div *ngIf="eventForm.get('entrenadorAsignado')?.hasError('required') && eventForm.get('entrenadorAsignado')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        Seleccionar un entrenador es obligatorio.
+      </div>
+    </div>   
+    <div>
+      <label>Fechas de Inscripción:</label>
+      <input formControlName="fechaInicioInscripcion" type="date" />
+      <input formControlName="fechaCierreInscripcion" type="date" />
+      <div *ngIf="eventForm.get('fechaInicioInscripcion')?.hasError('fechaAnterior')" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        La fecha de inicio de inscripción no puede ser anterior a hoy.
+      </div>
+      <div *ngIf="eventForm.get('fechaCierreInscripcion')?.hasError('fechaAnterior')" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        La fecha de cierre de inscripción no puede ser anterior a hoy.
+      </div>
+    </div>
+    <div>
+      <label>Fechas del Evento:</label>
+      <input formControlName="fechaInicioEvento" type="date" />
+      <input formControlName="fechaFinEvento" type="date" />
+    
+      <div *ngIf="eventForm.hasError('fechasEventoInvalidas')" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        La fecha de inicio del evento debe ser posterior al cierre de inscripciones.
+      </div>
+      <div *ngIf="eventForm.hasError('fechasEventoIncorrectas')" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        La fecha de inicio del evento no puede ser posterior a la fecha de fin.
+      </div>
+      <div *ngIf="eventForm.hasError('fechasEventoEnRangoInscripcion')" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        Las fechas del evento no pueden estar antes o durante el rango de inscripción.
+      </div>
+    </div>    
+    <div formArrayName="horarios">
+      <h3>Horarios</h3>
+      <div *ngFor="let horario of horarios.controls; let i = index" [formGroupName]="i">
+        <label>Día:</label>
+        <input formControlName="dia" type="date" />
+        <div *ngIf="horario.get('dia')?.hasError('fueraDeRango') && horario.get('dia')?.touched" class="error-text">
+          <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+          La fecha seleccionada está fuera del rango del evento.
+        </div>
+        <label>Hora de Inicio:</label>
+        <input formControlName="horaInicio" type="time" />
+        <label>Hora de Finalización:</label>
+        <input formControlName="horaFin" type="time" />
+        <label>Zona Deportiva:</label>
+        <select formControlName="zonaDeportiva">
+          <option *ngFor="let area of areasDeportivas" [value]="area">{{ area }}</option>
+        </select>
+        <button (click)="eliminarHorario(i)" type="button">Eliminar</button>
+      </div>
+      <button (click)="agregarHorario()" type="button">Agregar Horario</button>
+    </div>
+    <div>
+      <label>Modalidades de Participación:</label>
+      <input formControlName="modalidades" type="text" />
+      <div *ngIf="eventForm.get('modalidades')?.hasError('required') && eventForm.get('modalidades')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        Las modalidades son obligatorias.
+      </div>
+    </div>
+    <div>
+      <label>Costo de Inscripción:</label>
+      <input formControlName="costo" type="number" />
+      <div *ngIf="eventForm.get('costo')?.hasError('min') && eventForm.get('costo')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        El costo no puede ser negativo.
+      </div>
+    </div>
+    <div>
+      <label>Requisitos y Reglas:</label>
+      <textarea formControlName="requisitos"></textarea>
+    </div>
+    <div>
+      <label>Convocatoria:</label>
+      <input formControlName="convocatoria" type="file" />
+    </div>
+    <button type="submit">Guardar Evento</button>
+  </form>
+</div>

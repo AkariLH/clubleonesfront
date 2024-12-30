@@ -1,0 +1,43 @@
+<div class="form-container">
+  <h2>Registrar Usuario Administrativo</h2>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label>Nombre Completo:</label>
+      <input formControlName="nombre" type="text" />
+      <div *ngIf="userForm.get('nombre')?.hasError('required') && userForm.get('nombre')?.touched" class="error-text">
+        El nombre es obligatorio.
+      </div>
+    </div>
+
+    <div>
+      <label>Correo Electrónico:</label>
+      <input formControlName="email" type="email" />
+      <div *ngIf="userForm.get('email')?.hasError('email') && userForm.get('email')?.touched" class="error-text">
+        Ingresa un correo válido.
+      </div>
+    </div>
+
+    <div>
+      <label>Contraseña:</label>
+      <input formControlName="contrasena" type="password" />
+      <div *ngIf="userForm.get('contrasena')?.hasError('required') && userForm.get('contrasena')?.touched" class="error-text">
+        La contraseña es obligatoria.
+      </div>
+      <div *ngIf="userForm.get('contrasena')?.hasError('minlength') && userForm.get('contrasena')?.touched" class="error-text">
+        La contraseña debe tener al menos 6 caracteres.
+      </div>
+    </div>
+
+    <div>
+      <label>Rol:</label>
+      <select formControlName="rol">
+        <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.name }}</option>
+      </select>
+      <div *ngIf="userForm.get('rol')?.hasError('required') && userForm.get('rol')?.touched" class="error-text">
+        Selecciona un rol.
+      </div>
+    </div>
+
+    <button type="submit">Registrar Usuario</button>
+  </form>
+</div>

@@ -1,0 +1,45 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h3>Agregar Tipo de Evento Personalizado</h3>
+    <form [formGroup]="formularioTipoPersonalizado" (ngSubmit)="guardarTipoPersonalizado()">
+      <div>
+        <label>Nombre del Tipo de Evento:</label>
+        <input formControlName="nombre" placeholder="Escribe el tipo de evento" />
+        <div *ngIf="formularioTipoPersonalizado.get('nombre')?.hasError('required') && formularioTipoPersonalizado.get('nombre')?.touched">
+          <small class="error-text">El nombre del tipo de evento es obligatorio.</small>
+        </div>
+      </div>
+
+      <div>
+        <label>Descripción:</label>
+        <textarea formControlName="descripcion" placeholder="Escribe una breve descripción"></textarea>
+      </div>
+
+      <div>
+        <label>Modalidad:</label>
+        <input formControlName="modalidad" placeholder="Escribe la modalidad" />
+      </div>
+
+      <div>
+        <label>Categoría:</label>
+        <input formControlName="categoria" placeholder="Escribe la categoría" />
+      </div>
+
+      <div>
+        <label>Cantidad de Participantes:</label>
+        <input formControlName="cantidadParticipantes" type="number" placeholder="Escribe la cantidad de participantes" />
+        <div *ngIf="formularioTipoPersonalizado.get('cantidadParticipantes')?.hasError('min') && formularioTipoPersonalizado.get('cantidadParticipantes')?.touched">
+          <small class="error-text">La cantidad debe ser al menos 1.</small>
+        </div>
+      </div>
+
+      <div>
+        <label>Métricas para Medir Desempeño:</label>
+        <textarea formControlName="metricas" placeholder="Escribe las métricas (separadas por comas)"></textarea>
+      </div>
+
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cerrarFormulario()">Cancelar</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+.events-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .calendar-section {
+    flex: 1; /* Calendario ocupa 50% */
+  }
+  
+  .event-details-section {
+    flex: 1; /* Detalles del evento ocupan 50% */
+  }

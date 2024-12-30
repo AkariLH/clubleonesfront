@@ -1,0 +1,23 @@
+<div class="calendar">
+  <div class="header">
+    <button (click)="prevMonth()">&#10094;</button>
+    <h3>{{ months[currentMonth] }} {{ currentYear }}</h3>
+    <button (click)="nextMonth()">&#10095;</button>
+  </div>
+
+  <div class="days">
+    <span *ngFor="let day of days">{{ day }}</span>
+  </div>
+
+  <div class="dates">
+    <div
+      *ngFor="let date of calendarDays"
+      [class.event]="date && hasEvent(date)"
+      (click)="date && selectDate(date)"
+    >
+      {{ date ? date.getDate() : '' }}
+    </div>
+  </div>
+</div>
+
+  
