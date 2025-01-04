@@ -1,15 +1,45 @@
-<div class="cards">
-  <div class="card" *ngFor="let usuario of usuarios">
-    <div class="card-header">
-      <h3>{{ usuario.nombre }}</h3>
-      <span class="role {{ usuario.rol | lowercase }}">{{ usuario.rol }}</span>
+<div class="user-table-container">
+  <div class="search-container">
+    <input
+      type="text"
+      placeholder="Buscar usuarios..."
+      [(ngModel)]="searchTerm"
+      class="search-bar"
+    />
+    <div class="filter-dropdown-container">
+      <button class="btn-filter" (click)="toggleDropdown()">
+        <fa-icon [icon]="'filter'" class="filter-icon"></fa-icon>
+        Filtrar
+      </button>
+      <div class="filter-dropdown" *ngIf="dropdownVisible">
+        <label for="role-filter">Rol:</label>
+        <select [(ngModel)]="selectedRole" id="role-filter" class="filter-dropdown-select">
+          <option value="">Todos los roles</option>
+          <option value="Administrador">Administrador</option>
+          <option value="Entrenador">Entrenador</option>
+          <option value="Atleta">Atleta</option>
+        </select>
+        <div class="filter-actions">
+          <button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>
+          <button class="btn-reset" (click)="clearFilters()">Limpiar Filtros</button>
+        </div>
+      </div>
     </div>
-    <div class="card-content">
-      <p><strong>Correo:</strong> {{ usuario.correo }}</p>
-    </div>
-    <div class="card-actions">
-      <button class="btn-secondary">Editar</button>
-      <button class="btn-danger">Eliminar</button>
+  </div>
+
+  <div class="cards">
+    <div class="card" *ngFor="let usuario of filteredUsuarios">
+      <div class="card-header">
+        <h3>{{ usuario.nombre }}</h3>
+        <span class="role">{{ usuario.rol }}</span>
+      </div>
+      <div class="card-content">
+        <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn-secondary">Editar</button>
+        <button class="btn-danger">Eliminar</button>
+      </div>
     </div>
   </div>
 </div>

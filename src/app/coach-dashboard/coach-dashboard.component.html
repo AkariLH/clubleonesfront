@@ -1,0 +1,28 @@
+<div class="dashboard-container">
+    <h1>Panel del Entrenador</h1>
+    <div class="dashboard-panels">
+      <!-- Eventos Asignados -->
+      <div class="panel">
+        <h2>Eventos Asignados</h2>
+        <app-event-table [userRole]="userRole"></app-event-table>
+      </div>
+  
+      <!-- Atletas Inscritos -->
+      <div class="panel">
+        <h2>Atletas Inscritos</h2>
+        <p>Selecciona un evento para ver los atletas inscritos.</p>
+        <!-- Aquí se podría agregar un componente adicional en el futuro -->
+      </div>
+  
+      <!-- Panel de Tareas -->
+      <div class="panel">
+        <h2>Panel de Tareas</h2>
+        <ul>
+          <li>Revisar el progreso de los atletas</li>
+          <li>Planificar entrenamientos</li>
+          <li>Actualizar resultados</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  

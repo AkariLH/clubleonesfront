@@ -1,16 +1,60 @@
-<div class="cards">
-  <div class="card" *ngFor="let evento of eventos">
-    <div class="card-header">
-      <h3>{{ evento.nombre }}</h3>
-      <span class="status {{ evento.estado | lowercase }}">{{ evento.estado }}</span>
+<div class="event-table-container">
+  <!-- Barra de búsqueda y botón de filtro -->
+  <div class="search-container">
+    <input
+      type="text"
+      placeholder="Buscar eventos..."
+      [(ngModel)]="searchTerm"
+      class="search-bar"
+    />
+    <div class="filter-dropdown-container">
+      <button class="btn-filter" (click)="toggleDropdown()">
+        <fa-icon [icon]="'filter'" class="filter-icon"></fa-icon>
+        Filtrar
+      </button>
+      <div class="filter-dropdown" *ngIf="dropdownVisible">
+        <label for="status-filter">Estado:</label>
+        <select [(ngModel)]="selectedStatus" id="status-filter" class="filter-dropdown-select">
+          <option value="">Todos los estados</option>
+          <option value="Inscripciones">Inscripciones</option>
+          <option value="Activo">Activo</option>
+          <option value="Finalizado">Finalizado</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+
+        <label for="type-filter">Tipo de evento:</label>
+        <select id="filter-type" [(ngModel)]="selectedType" class="filter-dropdown-select">
+          <option value="">Todos los tipos</option>
+          <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+        </select>
+
+        <label for="date-filter">Fecha:</label>
+        <input type="date" [(ngModel)]="selectedDate" id="date-filter" class="filter-dropdown-select" />
+
+        <div class="filter-actions">
+          <button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>
+          <button class="btn-reset" (click)="clearFilters()">Limpiar Filtros</button>
+        </div>
+      </div>
     </div>
-    <div class="card-content">
-      <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
-      <p><strong>Entrenador:</strong> {{ evento.entrenador }}</p>
-    </div>
-    <div class="card-actions">
-      <button class="btn-secondary">Editar</button>
-      <button class="btn-danger">Eliminar</button>
+  </div>
+
+  <!-- Tarjetas de eventos -->
+  <div class="cards">
+    <div class="card" *ngFor="let evento of filteredEventos">
+      <div class="card-header">
+        <h3>{{ evento.nombre }}</h3>
+        <span class="status" [class]="evento.estado.toLowerCase()">{{ evento.estado }}</span>
+      </div>
+      <div class="card-content">
+        <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+        <p><strong>Entrenador:</strong> {{ evento.entrenador }}</p>
+        <p><strong>Tipo:</strong> {{ evento.tipo }}</p>
+      </div>
+      <div class="card-actions">
+        <button *ngIf="userRole === 'Administrador'" class="btn-secondary" (click)="editarEvento(evento)">Editar</button>
+        <button *ngIf="userRole === 'Administrador'" class="btn-danger" (click)="cancelarEvento(evento)">Cancelar</button>
+      </div>
     </div>
   </div>
 </div>

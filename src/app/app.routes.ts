@@ -7,6 +7,8 @@ import { CreateEventComponent } from './create-event/create-event.component';
 import { AddEventTypeComponent } from './add-event-type/add-event-type.component';
 import { AdministrationRegistrationComponent } from './administration-registration/administration-registration.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { LoginComponent } from './login/login.component';
+import { CoachDashboardComponent } from './coach-dashboard/coach-dashboard.component';
 
 
 export const routes: Routes = [
@@ -17,5 +19,8 @@ export const routes: Routes = [
   { path: 'crear-evento', component: CreateEventComponent},
   {path:'agregar-tipo-evento',component:AddEventTypeComponent},
   {path: 'registro-admin',component:AdministrationRegistrationComponent},
-  {path:'admin-dashboard', component:AdminDashboardComponent}
+  {path:'admin-dashboard', component:AdminDashboardComponent},
+  {path: 'crear-evento/:id', component: CreateEventComponent },
+  {path: 'login', component: LoginComponent},
+  {path: 'coach-dashboard', component: CoachDashboardComponent}
 ];

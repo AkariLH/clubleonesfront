@@ -10,4 +10,6 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [EventTableComponent, UserTableComponent, RouterModule],
 })
-export class AdminDashboardComponent {}
+export class AdminDashboardComponent {
+  userRole: string = 'Administrador'; // Rol del usuario autenticado
+}

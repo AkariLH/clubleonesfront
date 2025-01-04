@@ -79,3 +79,169 @@
 .btn-danger:hover {
   background-color: #b02a37;
 }
+
+/* Contenedor general de los paneles */
+.table-container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra de búsqueda */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.search-bar {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar:focus {
+  border-color: #ffd700;
+  outline: none;
+  box-shadow: 0px 0px 4px rgba(255, 215, 0, 0.8);
+}
+
+/* Botón de filtro */
+.btn-filter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #ddd;
+  color: #333;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-filter:hover {
+  background-color: #bbb;
+}
+
+/* Menú desplegable para filtros */
+.filter-dropdown-container {
+  position: relative;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 250px;
+  z-index: 1000;
+}
+
+.filter-dropdown label {
+  font-size: 0.9rem;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.filter-dropdown-select,
+.filter-dropdown input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+/* Botón de aplicar filtros */
+.btn-apply {
+  background-color: #ffd700;
+  color: #000;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-apply:hover {
+  background-color: #f0c400;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-reset {
+  background-color: #ccc;
+  color: #333;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1;
+  text-align: center;
+}
+
+.btn-reset:hover {
+  background-color: #aaa;
+}
+
+.status.inscripciones {
+  background-color: #ff8800;
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.status.cancelado {
+  background-color: #000000;
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}

@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
+import { Component, Input,OnInit,Output,EventEmitter} from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl,FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'; // Importar el ícono específico
-import { FormsModule } from '@angular/forms';
 import { AddEventTypeComponent } from '../add-event-type/add-event-type.component';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-create-event',
@@ -13,7 +13,7 @@ import { AddEventTypeComponent } from '../add-event-type/add-event-type.componen
   styleUrls: ['./create-event.component.css'],
   imports: [ReactiveFormsModule, CommonModule,FontAwesomeModule,FormsModule,AddEventTypeComponent],
 })
-export class CreateEventComponent {
+export class CreateEventComponent {  
   eventForm: FormGroup;
   areasDeportivas = ['Alberca Olímpica', 'Pista de Atletismo', 'Zona de Ciclismo Indoor', 'Zona de Spa y Relajación'];
   faTriangleExclamation = faTriangleExclamation; // Asignar el ícono para usarlo en la plantilla
@@ -22,11 +22,14 @@ export class CreateEventComponent {
   formularioVisible: boolean = false;
   entrenadores = ['Carlos Pérez', 'María López', 'Juan Hernández', 'Sofía Martínez']; // Lista de entrenadores
   formularioTipoPersonalizado!: FormGroup;
+  @Input() eventData: any = null;
+  @Output() onSave = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
     // Inicialización del formulario principal
     this.eventForm = this.fb.group(
       {
+        id: [''],
         nombre: ['', Validators.required],
         fechaInicioInscripcion: ['', [Validators.required, this.validarFechaFutura]],
         fechaCierreInscripcion: ['', [Validators.required, this.validarFechaFutura]],
@@ -52,7 +55,13 @@ export class CreateEventComponent {
       metricas: ['', Validators.required],
     });
   }
-  
+
+  ngOnInit() {
+    const eventId = this.route.snapshot.paramMap.get('id');
+    if (eventId) {
+      this.cargarEvento(eventId); // Carga los datos del evento
+    }
+  }
 
   get horarios(): FormArray {
     return this.eventForm.get('horarios') as FormArray;
@@ -194,11 +203,44 @@ export class CreateEventComponent {
     this.cerrarFormulario();
   }
 
+  
   onSubmit() {
     if (this.eventForm.valid) {
-      console.log(this.eventForm.value);
+      console.log('Evento guardado:', this.eventForm.value);
+      this.router.navigate(['/admin-dashboard']); // Redirige al dashboard del administrador
     } else {
       console.log('Formulario inválido');
     }
   }
+  cargarEvento(id: string) {
+    // Simula una búsqueda de datos del evento
+    const eventos = [
+      {
+        id: '1',
+        nombre: 'Evento 1',
+        fechaInicioInscripcion: '2024-12-01',
+        fechaCierreInscripcion: '2024-12-10',
+        fechaInicioEvento: '2024-12-15',
+        fechaFinEvento: '2024-12-20',
+        entrenadorAsignado: 'Juan Pérez',
+        modalidades: 'Individual',
+        costo: 200,
+        requisitos: 'Traer identificación',
+        convocatoria: null,
+      },
+      // Otros eventos...
+    ];
+
+    const evento = eventos.find((e) => e.id === id);
+    if (evento) {
+      this.eventForm.patchValue(evento); // Llena el formulario con los datos del evento
+    }
+  }
+
+ 
+
+  cancelar() {
+    this.router.navigate(['/admin-dashboard']);
+  }
+
 }
