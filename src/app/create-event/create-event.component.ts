@@ -271,9 +271,7 @@ export class CreateEventComponent {
     const entrenador = this.entrenadores.find(e => e.idAdministrador === entrenadorSeleccionado);
     return entrenador ? entrenador.idAdministrador : 0;
   }
-  
 
-  
   onSubmit() {
     if (this.eventForm.valid) {
       const evento = {
@@ -287,8 +285,8 @@ export class CreateEventComponent {
         costo: this.eventForm.value.costo,
         horario: "",
         detalles: this.eventForm.value.detalles,
-        tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) }, // Directo del formulario
-        entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) }, // Directo del formulario
+        tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) }, 
+        entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) }, 
         administrador: { idAdministrador: 8 }, // Por ahora estático
         estado: "INSCRIPCIONES",
       };
