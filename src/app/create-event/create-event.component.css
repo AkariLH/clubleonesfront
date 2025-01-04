@@ -1,3 +1,4 @@
+/* Contenedor del formulario */
 .form-container {
   background-color: #f9f9f9;
   padding: 20px;
@@ -7,12 +8,14 @@
   margin: 0 auto;
 }
 
+/* Etiquetas */
 label {
   display: block;
   margin: 10px 0 5px;
   font-weight: bold;
 }
 
+/* Inputs y Selects */
 input, select, textarea, button {
   width: 100%;
   padding: 10px;
@@ -21,6 +24,7 @@ input, select, textarea, button {
   border-radius: 5px;
 }
 
+/* Botones */
 button {
   background-color: #ffd700;
   color: #000;
@@ -34,22 +38,23 @@ button:hover {
   color: #000;
 }
 
+/* Mensajes de error */
 .error-text {
   color: red;
   display: flex;
-  align-items: center; /* Alinea verticalmente el ícono con el texto */
+  align-items: center;
   font-size: 0.9em;
   margin-top: 5px;
 }
 
 .error-icon {
-  margin-right: 5px; /* Espaciado entre el ícono y el texto */
-  font-size: 1.2em; /* Ajusta el tamaño del ícono */
+  margin-right: 5px;
+  font-size: 1.2em;
 }
 
-/* Botón */
+/* Botón adicional */
 .btn-agregar {
-  display: block; /* Asegúrate de que esté visible */
+  display: block;
   background-color: #ffd700;
   color: #000;
   padding: 10px 20px;
@@ -64,4 +69,43 @@ button:hover {
   background-color: #f0c400;
 }
 
+/* Separadores de sección */
+.section-divider {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+}
 
+/* Contenedor de Radio Buttons */
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.radio-group label {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.radio-group input[type='radio'] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* Estilo específico para Modalidad y Categoría */
+.radio-section {
+  margin-bottom: 30px; /* Espaciado adicional entre secciones */
+}
+
+.radio-section h3 {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 10px;
+  border-left: 4px solid #ffd700;
+  padding-left: 10px;
+}

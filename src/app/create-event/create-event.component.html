@@ -1,6 +1,7 @@
 <div class="form-container">
   <h2>Crear Evento Deportivo</h2>
   <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre del evento -->
     <div>
       <label>Nombre del Evento:</label>
       <input formControlName="nombre" type="text" />
@@ -9,15 +10,19 @@
         El nombre del evento es obligatorio.
       </div>
     </div>
-    
+    <!-- Tipo de evento -->
     <div>
       <label>Tipo de Evento:</label>
-      <select [(ngModel)]="tipoSeleccionado" (change)="manejarSeleccion()">
-        <option *ngFor="let tipo of tiposPredeterminados" [value]="tipo">{{ tipo }}</option>
+      <select formControlName="tipoSeleccionado">
+        <option value="" disabled selected>Selecciona un tipo de evento</option>
+        <option *ngFor="let tipo of tiposPredeterminados" [value]="tipo.idTipoEvento">{{ tipo.nombre }}</option>
       </select>
-      
+      <div *ngIf="eventForm.get('tipoSeleccionado')?.invalid && eventForm.get('tipoSeleccionado')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        Seleccionar un tipo de evento es obligatorio.
+      </div>
     </div>
-    <!--Modal-->
+    <!--Modal para agregar otro tipo de evento-->
     <button
       type="button"
       class="btn-agregar"
@@ -29,18 +34,20 @@
       *ngIf="formularioVisible"
       (tipoAgregado)="manejarTipoAgregado($event)"
       (cerrar)="cerrarFormulario()"
-    ></app-add-event-type>   
-    <div>
+    ></app-add-event-type>  
+     <!-- Entrenador -->
+     <div>
       <label>Entrenador Asignado:</label>
       <select formControlName="entrenadorAsignado">
         <option value="" disabled selected>Selecciona un entrenador</option>
-        <option *ngFor="let entrenador of entrenadores" [value]="entrenador">{{ entrenador }}</option>
+        <option *ngFor="let entrenador of entrenadores" [value]="entrenador.idAdministrador">{{ entrenador.nombre }}</option>
       </select>
-      <div *ngIf="eventForm.get('entrenadorAsignado')?.hasError('required') && eventForm.get('entrenadorAsignado')?.touched" class="error-text">
+      <div *ngIf="eventForm.get('entrenadorAsignado')?.invalid && eventForm.get('entrenadorAsignado')?.touched" class="error-text">
         <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
         Seleccionar un entrenador es obligatorio.
       </div>
-    </div>   
+    </div>    
+    <!-- Fechas de inscripcion -->  
     <div>
       <label>Fechas de Inscripción:</label>
       <input formControlName="fechaInicioInscripcion" type="date" />
@@ -54,6 +61,7 @@
         La fecha de cierre de inscripción no puede ser anterior a hoy.
       </div>
     </div>
+    <!-- Fechas del evento -->
     <div>
       <label>Fechas del Evento:</label>
       <input formControlName="fechaInicioEvento" type="date" />
@@ -71,10 +79,13 @@
         <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
         Las fechas del evento no pueden estar antes o durante el rango de inscripción.
       </div>
-    </div>    
+    </div>
+    <!-- Horarios -->    
     <div formArrayName="horarios">
-      <h3>Horarios</h3>
+      <h3>Actividades</h3>
       <div *ngFor="let horario of horarios.controls; let i = index" [formGroupName]="i">
+        <label>Nombre:</label>
+        <input formControlName="nombre" type="text"/>
         <label>Día:</label>
         <input formControlName="dia" type="date" />
         <div *ngIf="horario.get('dia')?.hasError('fueraDeRango') && horario.get('dia')?.touched" class="error-text">
@@ -91,16 +102,49 @@
         </select>
         <button (click)="eliminarHorario(i)" type="button">Eliminar</button>
       </div>
-      <button (click)="agregarHorario()" type="button">Agregar Horario</button>
+      <button (click)="agregarHorario()" type="button">Agregar Actividad</button>
     </div>
-    <div>
-      <label>Modalidades de Participación:</label>
-      <input formControlName="modalidades" type="text" />
-      <div *ngIf="eventForm.get('modalidades')?.hasError('required') && eventForm.get('modalidades')?.touched" class="error-text">
-        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
-        Las modalidades son obligatorias.
+    <!-- Modalidad -->
+    <div class="radio-section">
+      <h3>Modalidades de Participación:</h3>
+      <div class="radio-group">
+        <label>
+          <input formControlName="modalidades" type="radio" value="INDIVIDUAL" />
+          Individual
+        </label>
+        <label>
+          <input formControlName="modalidades" type="radio" value="EQUIPO" />
+          Equipo
+        </label>
       </div>
     </div>
+    <!-- Divisor -->
+    <div class="section-divider">
+
+    </div>
+    <!-- Categoría -->
+    <div class="radio-section">
+      <h3>Categoría:</h3>
+      <div class="radio-group">
+        <label>
+          <input formControlName="categoria" type="radio" value="VARONIL" />
+          Varonil
+        </label>
+        <label>
+          <input formControlName="categoria" type="radio" value="FEMENIL" />
+          Femenil
+        </label>
+        <label>
+          <input formControlName="categoria" type="radio" value="MIXTO" />
+          Mixto
+        </label>
+        <label>
+          <input formControlName="categoria" type="radio" value="INFANTIL" />
+          Infantil
+        </label>
+      </div>
+    </div>
+    <!-- Costo -->
     <div>
       <label>Costo de Inscripción:</label>
       <input formControlName="costo" type="number" />
@@ -109,13 +153,10 @@
         El costo no puede ser negativo.
       </div>
     </div>
+    <!-- Detalles -->   
     <div>
-      <label>Requisitos y Reglas:</label>
-      <textarea formControlName="requisitos"></textarea>
-    </div>
-    <div>
-      <label>Convocatoria:</label>
-      <input formControlName="convocatoria" type="file" />
+      <label>Detalles adicionales:</label>
+      <textarea formControlName="detalles"></textarea>
     </div>
     <button type="submit" class="btn-primary">Guardar</button>
     <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>

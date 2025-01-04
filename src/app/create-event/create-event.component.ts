@@ -5,6 +5,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'; // Importar el ícono específico
 import { AddEventTypeComponent } from '../add-event-type/add-event-type.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { TipoEventoService } from '../services/tipo-evento.service';
+import { AdministracionService } from '../services/administracion.service';
 
 @Component({
   selector: 'app-create-event',
@@ -17,15 +20,22 @@ export class CreateEventComponent {
   eventForm: FormGroup;
   areasDeportivas = ['Alberca Olímpica', 'Pista de Atletismo', 'Zona de Ciclismo Indoor', 'Zona de Spa y Relajación'];
   faTriangleExclamation = faTriangleExclamation; // Asignar el ícono para usarlo en la plantilla
-  tiposPredeterminados = ['Fútbol', 'Natación', 'Atletismo']; // Cargar desde la base de datos
+  tiposPredeterminados: { idTipoEvento: number; nombre: string }[] = [];
   tipoSeleccionado: string = '';
   formularioVisible: boolean = false;
-  entrenadores = ['Carlos Pérez', 'María López', 'Juan Hernández', 'Sofía Martínez']; // Lista de entrenadores
+  entrenadores: { idAdministrador: number; nombre: string }[] = [];
   formularioTipoPersonalizado!: FormGroup;
   @Input() eventData: any = null;
   @Output() onSave = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
+  private apiUrl = 'http://localhost:8080/api/eventos';
+
+  constructor(private fb: FormBuilder, 
+              private router: Router, 
+              private route: ActivatedRoute, 
+              private http: HttpClient, 
+              private tipoEventoService: TipoEventoService, 
+              private administracionService: AdministracionService) {
     // Inicialización del formulario principal
     this.eventForm = this.fb.group(
       {
@@ -37,10 +47,11 @@ export class CreateEventComponent {
         fechaFinEvento: ['', [Validators.required, this.validarFechaFutura]],
         horarios: this.fb.array([]),
         entrenadorAsignado: ['', Validators.required], // Campo para el entrenador
-        modalidades: ['', Validators.required],
+        modalidades: ['', Validators.required], 
+        categoria: ['', Validators.required], 
         costo: ['', [Validators.required, Validators.min(0)]],
-        requisitos: ['', Validators.required],
-        convocatoria: [null, Validators.required],
+        detalles: ['', Validators.required],
+        tipoSeleccionado: ['', Validators.required],
       },
       { validators: [this.validarFechasInscripcionYEvento] }
     );
@@ -57,9 +68,11 @@ export class CreateEventComponent {
   }
 
   ngOnInit() {
+    this.obtenerTiposEventos();
+    this.obtenerEntrenadores();
     const eventId = this.route.snapshot.paramMap.get('id');
     if (eventId) {
-      this.cargarEvento(eventId); // Carga los datos del evento
+      this.loadEvent(eventId); // Carga los datos del evento
     }
   }
 
@@ -87,6 +100,21 @@ export class CreateEventComponent {
     while (this.horarios.length !== 0) {
       this.horarios.removeAt(0);
     }
+  }
+
+  loadEvent(id: string) {
+    this.http.get(`${this.apiUrl}/${id}`).subscribe({
+      next: (evento: any) => {
+        this.eventForm.patchValue(evento); // Llena el formulario con los datos del evento
+      },
+      error: (err) => {
+        console.error('Error al cargar el evento:', err);
+      },
+    });
+  }
+
+  cancelar() {
+    this.router.navigate(['/admin-dashboard']);
   }
 
   validarFechaFutura(control: AbstractControl) {
@@ -148,7 +176,6 @@ export class CreateEventComponent {
     return Object.keys(errores).length > 0 ? errores : null;
   }
   
-
   validarFechaDentroDeRango(control: AbstractControl) {
     const dia = control.value;
     const inicioEvento = this.eventForm?.get('fechaInicioEvento')?.value;
@@ -170,7 +197,6 @@ export class CreateEventComponent {
     return null;
   }
   
-
   validarHoras(control: AbstractControl) {
     const horaInicio = control.get('horaInicio')?.value;
     const horaFin = control.get('horaFin')?.value;
@@ -203,44 +229,85 @@ export class CreateEventComponent {
     this.cerrarFormulario();
   }
 
+  obtenerTiposEventos() {
+    this.tipoEventoService.getTipoEventos().subscribe(
+      (data: any[]) => {
+        this.tiposPredeterminados = data.map(tipo => ({
+          idTipoEvento: tipo.idTipoEvento,
+          nombre: tipo.nombre,
+        }));
+      },
+      (error) => {
+        console.error('Error al obtener los tipos de eventos:', error);
+      }
+    );
+  }
+    
+  obtenerEntrenadores() {
+    this.administracionService.getEntrenadores().subscribe(
+      (data: any[]) => {
+        // Filtrar solo los entrenadores
+        this.entrenadores = data
+          .filter((admin) => admin.rol === 'ENTRENADOR') // Filtra por rol
+          .map((entrenador) => ({
+            idAdministrador: entrenador.idAdministrador,
+            nombre: entrenador.nombre,
+          }));
+      },
+      (error) => {
+        console.error('Error al obtener los entrenadores:', error);
+      }
+    );
+  }
+  
+  
+
+  getTipoEventoId(tipoSeleccionado: number): number {
+    const tipoEvento = this.tiposPredeterminados.find(tipo => tipo.idTipoEvento === tipoSeleccionado);
+    return tipoEvento ? tipoEvento.idTipoEvento : 0;
+  }  
+
+  getEntrenadorId(entrenadorSeleccionado: number): number {
+    const entrenador = this.entrenadores.find(e => e.idAdministrador === entrenadorSeleccionado);
+    return entrenador ? entrenador.idAdministrador : 0;
+  }
+  
+
   
   onSubmit() {
     if (this.eventForm.valid) {
-      console.log('Evento guardado:', this.eventForm.value);
-      this.router.navigate(['/admin-dashboard']); // Redirige al dashboard del administrador
+      const evento = {
+        nombre: this.eventForm.value.nombre,
+        fechaInicioInscripciones: this.eventForm.value.fechaInicioInscripcion,
+        fechaFinInscripciones: this.eventForm.value.fechaCierreInscripcion,
+        fechaInicioEvento: this.eventForm.value.fechaInicioEvento,
+        fechaFinEvento: this.eventForm.value.fechaFinEvento,
+        modalidades: this.eventForm.value.modalidades,
+        categoria: this.eventForm.value.categoria,
+        costo: this.eventForm.value.costo,
+        horario: "",
+        detalles: this.eventForm.value.detalles,
+        tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) }, // Directo del formulario
+        entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) }, // Directo del formulario
+        administrador: { idAdministrador: 8 }, // Por ahora estático
+        estado: "INSCRIPCIONES",
+      };
+  
+      console.log('Payload enviado:', evento);
+  
+      this.http.post(this.apiUrl, evento).subscribe({
+        next: () => {
+          alert('Evento creado con éxito');
+          this.router.navigate(['/admin-dashboard']);
+        },
+        error: (err) => {
+          console.error('Error al crear el evento:', err);
+        },
+      });
     } else {
-      console.log('Formulario inválido');
+      alert('Por favor, completa todos los campos obligatorios.');
     }
   }
-  cargarEvento(id: string) {
-    // Simula una búsqueda de datos del evento
-    const eventos = [
-      {
-        id: '1',
-        nombre: 'Evento 1',
-        fechaInicioInscripcion: '2024-12-01',
-        fechaCierreInscripcion: '2024-12-10',
-        fechaInicioEvento: '2024-12-15',
-        fechaFinEvento: '2024-12-20',
-        entrenadorAsignado: 'Juan Pérez',
-        modalidades: 'Individual',
-        costo: 200,
-        requisitos: 'Traer identificación',
-        convocatoria: null,
-      },
-      // Otros eventos...
-    ];
-
-    const evento = eventos.find((e) => e.id === id);
-    if (evento) {
-      this.eventForm.patchValue(evento); // Llena el formulario con los datos del evento
-    }
-  }
-
- 
-
-  cancelar() {
-    this.router.navigate(['/admin-dashboard']);
-  }
-
+  
+  
 }
