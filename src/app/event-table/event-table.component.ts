@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router } from '@angular/router';
@@ -14,6 +14,8 @@ import { Router } from '@angular/router';
 export class EventTableComponent implements OnInit {
   @Input() userRole: string = ''; // Recibe el rol del usuario (Administrador o Entrenador)
   @Input() assignedEvents: any[] = []; // Para entrenadores: eventos asignados opcionalmente
+  @Output () eventoSeleccionado = new EventEmitter<any>();
+
   eventos = [
     { id: 1, nombre: 'Evento 1', fecha: '2024-12-30', entrenador: 'Juan Pérez', estado: 'Activo', tipo: 'Acuatlón bajo techo' },
     { id: 2, nombre: 'Evento 2', fecha: '2024-12-15', entrenador: 'María López', estado: 'Finalizado', tipo: 'Macro-zumba' },
@@ -97,6 +99,9 @@ export class EventTableComponent implements OnInit {
   editarEvento(evento: any) {
     this.router.navigate(['/crear-evento', evento.id]); // Redirige usando el id del evento
   }  
+  seleccionarEvento(evento:any){
+    this.eventoSeleccionado.emit(evento);
+  }
 }
 
 

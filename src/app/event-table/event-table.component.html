@@ -41,7 +41,7 @@
 
   <!-- Tarjetas de eventos -->
   <div class="cards">
-    <div class="card" *ngFor="let evento of filteredEventos">
+    <div class="card" *ngFor="let evento of filteredEventos" (click)="seleccionarEvento(evento)">
       <div class="card-header">
         <h3>{{ evento.nombre }}</h3>
         <span class="status" [class]="evento.estado.toLowerCase()">{{ evento.estado }}</span>
