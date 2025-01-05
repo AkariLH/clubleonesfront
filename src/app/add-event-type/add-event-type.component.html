@@ -17,40 +17,38 @@
       </div>
       <!-- Modalidad -->
       <div class="radio-section">
-        <h3>Modalidades de Participación:</h3>
+        <h3>Modalidades de Participación</h3>
         <div class="radio-group">
           <label>
-            <input formControlName="modalidades" type="radio" value="INDIVIDUAL" />
+            <input type="radio" formControlName="modalidad" value="INDIVIDUAL" />
             Individual
           </label>
           <label>
-            <input formControlName="modalidades" type="radio" value="EQUIPO" />
+            <input type="radio" formControlName="modalidad" value="EQUIPO" />
             Equipo
           </label>
         </div>
       </div>
       <!-- Divisor -->
-      <div class="section-divider">
-
-      </div>
+      <div class="section-divider"></div>
       <!-- Categoría -->
       <div class="radio-section">
-        <h3>Categoría:</h3>
+        <h3>Categoría</h3>
         <div class="radio-group">
           <label>
-            <input formControlName="categoria" type="radio" value="VARONIL" />
+            <input type="radio" formControlName="categoria" value="VARONIL" />
             Varonil
           </label>
           <label>
-            <input formControlName="categoria" type="radio" value="FEMENIL" />
+            <input type="radio" formControlName="categoria" value="FEMENIL" />
             Femenil
           </label>
           <label>
-            <input formControlName="categoria" type="radio" value="MIXTO" />
+            <input type="radio" formControlName="categoria" value="MIXTO" />
             Mixto
           </label>
           <label>
-            <input formControlName="categoria" type="radio" value="INFANTIL" />
+            <input type="radio" formControlName="categoria" value="INFANTIL" />
             Infantil
           </label>
         </div>
@@ -68,8 +66,10 @@
         <label>Métricas para Medir Desempeño:</label>
         <textarea formControlName="metricas" placeholder="Escribe las métricas (separadas por comas)"></textarea>
       </div>
-      <button type="submit">Guardar</button>
-      <button type="button" (click)="cerrarFormulario()">Cancelar</button>
+      <div class="button-group">
+        <button type="submit" class="btn-green"(click)="guardarTipoPersonalizado()">Guardar</button>
+        <button type="button" class="btn-red" (click)="cerrarFormulario()">Cancelar</button>
+      </div>
     </form>
   </div>
 </div>

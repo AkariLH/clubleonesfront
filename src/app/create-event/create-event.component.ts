@@ -225,10 +225,10 @@ export class CreateEventComponent {
   }
 
   manejarTipoAgregado(nuevoTipo: any) {
-    this.tiposPredeterminados.push(nuevoTipo.nombre); // Agregamos el nuevo tipo
-    this.tipoSeleccionado = nuevoTipo.nombre; // Seleccionamos el nuevo tipo automáticamente
-    this.cerrarFormulario();
-  }
+    this.tiposPredeterminados.push(nuevoTipo); // Agrega el nuevo tipo a la lista predeterminada
+    this.tipoSeleccionado = nuevoTipo.idTipoEvento; // Selecciona automáticamente el nuevo tipo
+    this.cerrarFormulario(); // Cierra el modal
+  }  
 
   obtenerTiposEventos() {
     this.tipoEventoService.getTipoEventos().subscribe(
