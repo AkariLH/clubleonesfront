@@ -26,8 +26,43 @@ export class EventsComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.cargarEventos();
+    this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe((eventos) => {
+      this.eventosAgrupados = {};
+  
+      eventos.forEach((evento) => {
+        const fechaInicio = new Date(evento.fechaInicioEvento);
+        const fechaFin = new Date(evento.fechaFinEvento);
+  
+        // Normalizamos las fechas para que queden sin horas
+        fechaInicio.setHours(0, 0, 0, 0);
+        fechaFin.setHours(0, 0, 0, 0);
+  
+        // Iterar desde la fecha de inicio hasta la fecha de fin
+        for (
+          let fecha = new Date(fechaInicio);
+          fecha <= fechaFin;
+          fecha.setDate(fecha.getDate() + 1)
+        ) {
+          const claveFecha = fecha.toISOString().split('T')[0]; // Formato 'YYYY-MM-DD'
+          if (!this.eventosAgrupados[claveFecha]) {
+            this.eventosAgrupados[claveFecha] = [];
+          }
+  
+          this.eventosAgrupados[claveFecha].push({
+            nombre: evento.nombre,
+            fechaInicioEvento: evento.fechaInicioEvento,
+            fechaFinEvento: evento.fechaFinEvento,
+            categoria: evento.categoria,
+            modalidad: evento.modalidad,
+            detalles: evento.detalles,
+          });
+        }
+      });
+  
+      console.log('Eventos agrupados por fecha:', this.eventosAgrupados);
+    });
   }
+   
 
   cargarEventos() {
     this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe({
