@@ -14,9 +14,14 @@ label {
   margin: 10px 0 5px;
   font-weight: bold;
 }
-
-/* Inputs y Selects */
-input, select, textarea, button {
+input{
+  width: 96%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+select, textarea, button {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -108,4 +113,69 @@ button:hover {
   margin-bottom: 10px;
   border-left: 4px solid #ffd700;
   padding-left: 10px;
+}
+
+/* Contenedor del checkbox */
+.checkbox-section {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Ocultar el checkbox original */
+.styled-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Estilo del label */
+.checkbox-section label {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+  user-select: none; /* Evita la selección del texto al hacer clic */
+}
+
+/* Estilo del ícono del checkbox (falso) */
+.checkbox-section label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* Estilo del checkbox marcado */
+.styled-checkbox:checked + label::before {
+  border-color: #ffd700;
+  background-color: #ffd700;
+}
+
+/* Ícono del check */
+.checkbox-section label::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.styled-checkbox:checked + label::after {
+  opacity: 1;
 }

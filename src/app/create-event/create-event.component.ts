@@ -52,6 +52,7 @@ export class CreateEventComponent {
         costo: ['', [Validators.required, Validators.min(0)]],
         detalles: ['', Validators.required],
         tipoSeleccionado: ['', Validators.required],
+        cancelado: [false],
       },
       { validators: [this.validarFechasInscripcionYEvento] }
     );
@@ -260,8 +261,6 @@ export class CreateEventComponent {
     );
   }
   
-  
-
   getTipoEventoId(tipoSeleccionado: number): number {
     const tipoEvento = this.tiposPredeterminados.find(tipo => tipo.idTipoEvento === tipoSeleccionado);
     return tipoEvento ? tipoEvento.idTipoEvento : 0;
@@ -272,8 +271,32 @@ export class CreateEventComponent {
     return entrenador ? entrenador.idAdministrador : 0;
   }
 
+  calcularEstado(): string {
+    const cancelado = this.eventForm.get('cancelado')?.value;
+    const fechaActual = new Date();
+    const inicioInscripcion = new Date(this.eventForm.get('fechaInicioInscripcion')?.value);
+    const cierreInscripcion = new Date(this.eventForm.get('fechaCierreInscripcion')?.value);
+    const inicioEvento = new Date(this.eventForm.get('fechaInicioEvento')?.value);
+    const finEvento = new Date(this.eventForm.get('fechaFinEvento')?.value);
+  
+    if (cancelado) {
+      return "CANCELADO";
+    }
+  
+    if (fechaActual >= inicioInscripcion && fechaActual <= cierreInscripcion) {
+      return "INSCRIPCIONES";
+    }
+  
+    if (fechaActual >= inicioEvento && fechaActual <= finEvento) {
+      return "EN CURSO";
+    }
+  
+    return "FINALIZADO"; // Estado por defecto si no cumple ninguna de las condiciones anteriores
+  }
+  
   onSubmit() {
     if (this.eventForm.valid) {
+      const estadoCalculado = this.calcularEstado();
       const evento = {
         nombre: this.eventForm.value.nombre,
         fechaInicioInscripciones: this.eventForm.value.fechaInicioInscripcion,
@@ -288,7 +311,7 @@ export class CreateEventComponent {
         tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) }, 
         entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) }, 
         administrador: { idAdministrador: 8 }, // Por ahora estático
-        estado: "INSCRIPCIONES",
+        estado: estadoCalculado,
       };
   
       console.log('Payload enviado:', evento);
@@ -306,6 +329,4 @@ export class CreateEventComponent {
       alert('Por favor, completa todos los campos obligatorios.');
     }
   }
-  
-  
 }
