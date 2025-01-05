@@ -87,12 +87,12 @@ export class CreateEventComponent {
       horaInicio: ['', Validators.required],
       horaFin: ['', Validators.required],
       zonaDeportiva: ['', Validators.required],
-    }, { validators: [this.validarHoras] });
+      nombre: ['', Validators.required] // Asegúrate de incluir este campo si está en el template
+    });
   
     this.horarios.push(horarioGroup);
-  }
+  }  
   
-
   eliminarHorario(index: number) {
     this.horarios.removeAt(index);
   }
