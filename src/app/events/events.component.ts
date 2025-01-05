@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component , OnInit} from '@angular/core';
 import { EventsCalendarComponent } from '../events-calendar/events-calendar.component';
 import { CommonModule } from '@angular/common';
 import { EventDetailsComponent } from '../event-details/event-details.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-events',
@@ -10,22 +11,55 @@ import { EventDetailsComponent } from '../event-details/event-details.component'
   styleUrls: ['./events.component.css'],
   imports: [CommonModule, EventsCalendarComponent,EventDetailsComponent],
 })
-export class EventsComponent {
-  events: { [key: string]: string[] } = {
-    '2024-12-25': ['Navidad'],
-    '2025-01-01': ['Año Nuevo'],
-    '2025-02-14': ['Día de San Valentín'],
-  };
-  
+export class EventsComponent implements OnInit {
+  eventos: any[] = []; // Todos los eventos desde el backend
+  eventosSeleccionados: {
+    nombre: string;
+    fechaInicioEvento: string;
+    fechaFinEvento: string;
+    categoria: string;
+    modalidades: string;
+    detalles: string;
+  }[] = []; // Detalles del día seleccionado
+  eventosAgrupados: { [key: string]: any[] } = {}; // Agrupados por fecha
 
-  selectedEvents: string[] = [];
+  constructor(private http: HttpClient) {}
 
-  onDateSelected(date: Date) {
-    const key = `${date.getFullYear()}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-    console.log('Fecha seleccionada:', key); // Verifica que la clave sea correcta
-    console.log('Eventos encontrados:', this.events[key]); // Verifica los eventos encontrados
-    this.selectedEvents = this.events[key] || []; // Actualiza los eventos seleccionados
+  ngOnInit() {
+    this.cargarEventos();
+  }
+
+  cargarEventos() {
+    this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe({
+      next: (eventos) => {
+        this.eventos = eventos;
+
+        // Agrupa eventos por fecha
+        this.eventosAgrupados = eventos.reduce((acc, evento) => {
+          const fecha = evento.fechaInicioEvento.split('T')[0]; // Extraer la fecha
+          acc[fecha] = acc[fecha] || [];
+          acc[fecha].push(evento);
+          return acc;
+        }, {});
+      },
+      error: (err) => {
+        console.error('Error al cargar eventos:', err);
+      },
+    });
+  }
+
+  onDateSelected(fecha: Date) {
+    const fechaClave = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const eventosDelDia = this.eventosAgrupados[fechaClave] || [];
+
+    // Mapear los datos a los detalles relevantes
+    this.eventosSeleccionados = eventosDelDia.map((evento) => ({
+      nombre: evento.nombre,
+      fechaInicioEvento: evento.fechaInicioEvento,
+      fechaFinEvento: evento.fechaFinEvento,
+      categoria: evento.categoria || 'No especificada',
+      modalidades: evento.modalidades || 'No especificada',
+      detalles: evento.detalles || 'Sin detalles',
+    }));
   }
 }

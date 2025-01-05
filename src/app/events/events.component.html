@@ -1,11 +1,17 @@
 <div class="events-container">
-    <div class="calendar-section">
-      <app-events-calendar
-        [events]="events"
-        (dateSelected)="onDateSelected($event)"
-      ></app-events-calendar>
-    </div>
-    <div class="event-details-section">
-      <app-event-details [events]="selectedEvents"></app-event-details>
-    </div>
+  <!-- Sección del calendario -->
+  <div class="calendar-section">
+    <app-events-calendar
+      [events]="eventosAgrupados"
+      (dateSelected)="onDateSelected($event)"
+    ></app-events-calendar>
   </div>
+
+  <!-- Sección de detalles del evento -->
+  <div class="event-details-section">
+    <div>
+    <h3>Eventos registrados</h3>
+  </div>
+    <app-event-details [events]="eventosSeleccionados"></app-event-details>
+  </div>
+</div>

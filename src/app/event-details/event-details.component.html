@@ -1,9 +1,15 @@
-<div *ngIf="events.length > 0; else noEvents">
-    <h3>Detalles del Evento</h3>
-    <ul>
-      <li *ngFor="let event of events">{{ event }}</li>
-    </ul>
+<div class="card-container" *ngIf="events.length > 0; else noEvents">
+  <div class="event-card" *ngFor="let event of events">
+    <h3 class="event-title">{{ event.nombre }}</h3>
+    <p><strong>Fecha de Inicio:</strong> {{ event.fechaInicioEvento | date }}</p>
+    <p><strong>Fecha de Fin:</strong> {{ event.fechaFinEvento | date }}</p>
+    <p><strong>Categoría:</strong> {{ event.categoria }}</p>
+    <p><strong>Modalidad:</strong> {{ event.modalidades }}</p>
+    <p><strong>Detalles:</strong> {{ event.detalles }}</p>
+    <button class="view-more-btn" (click)="verMas(event)">Ver Más</button>
   </div>
-  <ng-template #noEvents>
-    <p>No hay eventos seleccionados.</p>
-  </ng-template>
+</div>
+
+<ng-template #noEvents>
+  <p>No hay eventos seleccionados.</p>
+</ng-template>

@@ -9,5 +9,17 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./event-details.component.css'],
 })
 export class EventDetailsComponent {
-  @Input() events: string[] = []; // Define la entrada de datos
+  @Input() events: {
+    nombre: string;
+    fechaInicioEvento: string;
+    fechaFinEvento: string;
+    categoria: string;
+    modalidades: string;
+    detalles: string;
+  }[] = [];
+
+  verMas(event: any): void {
+    // Lógica para ver más detalles o navegar a otra página
+    alert(`Ver más detalles del evento: ${event.nombre}`);
+  }
 }

@@ -1,13 +1,101 @@
+/* Contenedor principal */
 .events-container {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  .events-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+/* Sección del calendario */
+.calendar-section {
+  flex: 0.35;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.calendar-section:hover {
+  transform: scale(1.02);
+}
+
+/* Sección de detalles del evento */
+.event-details-section {
+  flex: 0.6;
+  background: #ffffff;
+  padding: 0; /* Eliminamos padding externo para el scroll */
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 500px; /* Altura máxima para evitar que crezca demasiado */
+  overflow-y: auto; /* Habilitamos scroll interno */
+  position: relative; /* Para que sticky funcione */
+}
+
+/* Contenedor del título */
+.event-details-section > div {
+  position: sticky;
+  top: 0; /* Fijo en la parte superior del contenedor */
+  z-index: 100; /* Evitamos que se mezcle con el contenido desplazable */
+  background-color: #ffffff; /* Fondo sólido */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  border-bottom: 2px solid #ffd700; /* Línea dorada debajo del título */
+  padding: 10px 20px; /* Espaciado interno */
+}
+
+/* Título */
+.event-details-section h3 {
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: center;
+  color: #222;
+}
+
+/* Contenedor de tarjetas */
+.app-event-details {
+  padding: 20px; /* Espaciado interno */
+}
+
+/* Tarjetas de eventos */
+.event-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: left;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor responsivo para tarjetas */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Tarjetas ajustables */
+  gap: 15px;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .events-container {
+    flex-direction: column;
     gap: 20px;
-    padding: 20px;
   }
-  
-  .calendar-section {
-    flex: 1; /* Calendario ocupa 50% */
-  }
-  
+
+  .calendar-section,
   .event-details-section {
-    flex: 1; /* Detalles del evento ocupan 50% */
+    flex: 1; /* Ambos se expanden al 100% */
   }
+}
