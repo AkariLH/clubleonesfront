@@ -1,6 +1,7 @@
 <div class="form-container">
   <h2>Registrar Usuario Administrativo</h2>
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre --> 
     <div>
       <label>Nombre Completo:</label>
       <input formControlName="nombre" type="text" />
@@ -8,7 +9,7 @@
         El nombre es obligatorio.
       </div>
     </div>
-
+    <!-- Correo --> 
     <div>
       <label>Correo Electrónico:</label>
       <input formControlName="email" type="email" />
@@ -16,7 +17,7 @@
         Ingresa un correo válido.
       </div>
     </div>
-
+    <!-- Contraseña --> 
     <div>
       <label>Contraseña:</label>
       <input formControlName="contrasena" type="password" />
@@ -27,17 +28,17 @@
         La contraseña debe tener al menos 6 caracteres.
       </div>
     </div>
-
+    <!-- Rol --> 
     <div>
       <label>Rol:</label>
       <select formControlName="rol">
-        <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.name }}</option>
+        <option value="" disabled selected>Selecciona un rol</option>
+        <option *ngFor="let rol of roles" [value]="rol.name">{{ rol.name }}</option>
       </select>
-      <div *ngIf="userForm.get('rol')?.hasError('required') && userForm.get('rol')?.touched" class="error-text">
+      <div *ngIf="userForm.get('rol')?.invalid && userForm.get('rol')?.touched" class="error-text">
         Selecciona un rol.
       </div>
-    </div>
-
+    </div>    
     <button type="submit">Registrar Usuario</button>
   </form>
 </div>

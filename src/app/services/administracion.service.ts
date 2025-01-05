@@ -13,4 +13,8 @@ export class AdministracionService {
   getEntrenadores(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl); // Devuelve la lista de entrenadores
   }
+
+  createAdministrador(administrador: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, administrador);
+  }
 }
