@@ -35,6 +35,18 @@
           ⚠️ La fecha de nacimiento es obligatoria.
         </small>
       </div>
+
+      <div class="form-group">
+        <label for="sexo">Sexo</label>
+        <select id="sexo" formControlName="sexo">
+          <option value="" disabled selected>Selecciona tu sexo</option>
+          <option value="MASCULINO">Masculino</option>
+          <option value="FEMENINO">Femenino</option>
+        </select>
+        <small *ngIf="athleteForm.get('sexo')?.invalid && athleteForm.get('sexo')?.touched">
+          ⚠️ El sexo es obligatorio.
+        </small>
+      </div>
     </div>
 
     <!-- Divisor -->
