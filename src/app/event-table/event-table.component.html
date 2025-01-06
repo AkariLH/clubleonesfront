@@ -16,7 +16,7 @@
         <label for="status-filter">Estado:</label>
         <select [(ngModel)]="selectedStatus" id="status-filter" class="filter-dropdown-select">
           <option value="">Todos los estados</option>
-          <option value="Inscripciones">Inscripciones</option>
+          <option value="INSCRIPCIONES">Inscripciones</option>
           <option value="EN_CURSO">En Curso</option>
           <option value="FINALIZADO">Finalizado</option>
           <option value="CANCELADO">Cancelado</option>
@@ -32,7 +32,7 @@
         <input type="date" [(ngModel)]="selectedDate" id="date-filter" class="filter-dropdown-select" />
 
         <div class="filter-actions">
-          <button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>
+      <!--<button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>-->
           <button class="btn-reset" (click)="clearFilters()">Limpiar Filtros</button>
         </div>
       </div>

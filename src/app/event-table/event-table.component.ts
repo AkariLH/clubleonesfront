@@ -5,7 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-event-table',
@@ -229,7 +229,18 @@ export class EventTableComponent implements OnInit {
         (error) => console.error('Error al actualizar el estado:', error)
       );
   }
-  
 
+  @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent): void {
+      const target = event.target as HTMLElement;
+  
+      // Verifica si el clic fue fuera del dropdown
+      if (
+        !target.closest('.filter-dropdown-container') &&
+        this.dropdownVisible
+      ) {
+        this.dropdownVisible = false;
+      }
+    }
   
 }
