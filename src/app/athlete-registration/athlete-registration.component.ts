@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { SessionService } from '../services/session.service';
+import { Session } from '../classes/Session';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-athlete-registration',
@@ -13,9 +16,10 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AthleteRegistrationComponent {
   athleteForm: FormGroup;
+  private sessionActive: Session;
   private apiUrl = 'http://localhost:8080/api/atletas'; // URL del backend
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private session: SessionService, private router: Router) {
     this.athleteForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(3)]],
@@ -28,6 +32,17 @@ export class AthleteRegistrationComponent {
       peso: ['', [Validators.required, Validators.min(30), Validators.max(200)]],
       estatura: ['', [Validators.required, Validators.min(1), Validators.max(2.5)]],
     });
+
+    this.sessionActive = this.session.getSession();
+    if(this.sessionActive.tipoUsuario == 'ADMIN'){
+      console.log('administrador');
+    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
+      this.router.navigate(['/**']);
+      console.log('entrenador');
+    }else{
+      console.log('atleta');
+    }
+  
   }
 
   onSubmit(): void {

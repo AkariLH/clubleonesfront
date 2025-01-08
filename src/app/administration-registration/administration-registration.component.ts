@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AdministracionService } from '../services/administracion.service';
+import { SessionService } from '../services/session.service';
+import { Session } from '../classes/Session';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-administration-registration',
@@ -16,14 +19,25 @@ export class AdministrationRegistrationComponent {
     { id: 1, name: 'ADMIN' },
     { id: 2, name: 'ENTRENADOR' },
   ];
+  private sessionActive: Session;
 
-  constructor(private fb: FormBuilder, private administracionService: AdministracionService) {
+  constructor(private fb: FormBuilder, private administracionService: AdministracionService,private session: SessionService, private router: Router) {
     this.userForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
       rol: [null, Validators.required],
     });
+    this.sessionActive = this.session.getSession();
+    if(this.sessionActive.tipoUsuario == 'ADMIN'){
+      console.log('administrador');
+    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
+      this.router.navigate(['/**']);
+      console.log('entrenador');
+    }else{
+      this.router.navigate(['/**']);
+      console.log('atleta');
+    }
   }
 
   onSubmit() {

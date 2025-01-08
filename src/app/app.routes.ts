@@ -9,6 +9,7 @@ import { AdministrationRegistrationComponent } from './administration-registrati
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { CoachDashboardComponent } from './coach-dashboard/coach-dashboard.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 
@@ -25,5 +26,6 @@ export const routes: Routes = [
   { path: 'crear-evento/:id', component: CreateEventComponent},
   { path: 'login', component: LoginComponent },
   { path: 'coach-dashboard', component: CoachDashboardComponent },
+  { path: '**', component: NotFoundComponent},
 ];
 

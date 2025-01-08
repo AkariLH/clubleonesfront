@@ -8,6 +8,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TipoEventoService } from '../services/tipo-evento.service';
 import { AdministracionService } from '../services/administracion.service';
+import { SessionService } from '../services/session.service';
+import { Session } from '../classes/Session';
 
 @Component({
   selector: 'app-create-event',
@@ -26,6 +28,8 @@ export class CreateEventComponent {
   formularioVisible: boolean = false;
   entrenadores: { idAdministrador: number; nombre: string }[] = [];
   formularioTipoPersonalizado!: FormGroup;
+  private sessionActive: Session;
+
   @Input() eventData: any = null;
   @Output() onSave = new EventEmitter<void>();
 
@@ -36,7 +40,8 @@ export class CreateEventComponent {
               private route: ActivatedRoute, 
               private http: HttpClient, 
               private tipoEventoService: TipoEventoService, 
-              private administracionService: AdministracionService) {
+              private administracionService: AdministracionService,
+              private session: SessionService) {
     // Inicialización del formulario principal
     this.eventForm = this.fb.group(
       {
@@ -67,6 +72,18 @@ export class CreateEventComponent {
       cantidadParticipantes: [1, [Validators.required, Validators.min(1)]],
       metricas: ['', Validators.required],
     });
+
+    this.sessionActive = this.session.getSession();
+    console.log(this.sessionActive)
+    if(this.sessionActive.tipoUsuario == 'ADMIN'){
+      console.log('administrador');
+    }else if(this.sessionActive.tipoUsuario == 'ENTRENADOR'){
+      this.router.navigate(['/**']);
+      console.log('entrenador');
+    }else{
+      this.router.navigate(['/**']);
+      console.log('atleta');
+    }
   }
 
   ngOnInit() {

@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SessionService } from '../services/session.service';
+import { Session } from '../classes/Session';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,7 @@ export class LoginComponent {
   loginService: string;
   loginObject: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private session: SessionService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -30,6 +32,7 @@ export class LoginComponent {
       "correo": "akari@suzumail.com",
       "contrasena": "amoasuzu"
     };
+    this.session.printCookie();
   }
 
   onLogin() {
@@ -39,27 +42,27 @@ export class LoginComponent {
         contrasena: this.loginForm.value.password,
       };
   
-      this.http.post<UserDTO>(this.loginService, loginPayload, { withCredentials: true }).subscribe({
+      // Inspeccionar el payload enviado
+      console.log('Datos enviados al backend:', loginPayload);
+  
+      this.http.post(this.loginService, loginPayload).subscribe({
         next: (response) => {
           console.log('Respuesta del backend:', response);
-  
-          // Guardar información del usuario en localStorage o manejarla en el estado
-          localStorage.setItem('activeUser', JSON.stringify(response));
-          
-          // Redireccionar según el rol
-          if (response.rol === 'Administrador') {
+          this.session.sessionActive = JSON.parse(JSON.stringify(response));
+          this.session.saveSession(this.session.sessionActive);
+          if(this.session.sessionActive.tipoUsuario == 'ADMIN'){
             this.router.navigate(['/admin-dashboard']);
-          } else if (response.rol === 'Atleta') {
-            this.router.navigate(['/athlete-dashboard']);
+            console.log('administrador');
+          }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
+            this.router.navigate(['/coach-dashboard']);
+            console.log('entrenador');
+          }else{
+            // redireccion
+            console.log('atleta');
           }
         },
         error: (err) => {
-          this.failedAttempts++;
           console.error('Error en el backend:', err);
-  
-          if (this.failedAttempts >= this.maxAttempts) {
-            this.showAdminContact = true;
-          }
         },
       });
     }

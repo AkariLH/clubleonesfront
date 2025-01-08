@@ -2,6 +2,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TipoEventoService } from '../services/tipo-evento.service';
+import { SessionService } from '../services/session.service';
+import { Session } from '../classes/Session';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-event-type',
@@ -15,8 +18,10 @@ export class AddEventTypeComponent {
   @Output() cerrar = new EventEmitter<void>(); // Emitirá el evento para cerrar el modal
 
   formularioTipoPersonalizado: FormGroup;
+  private sessionActive: Session;
+  
 
-  constructor(private fb: FormBuilder,private tipoEventoService: TipoEventoService) {
+  constructor(private fb: FormBuilder,private tipoEventoService: TipoEventoService, private session: SessionService, private router: Router) {
     this.formularioTipoPersonalizado = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
@@ -25,6 +30,17 @@ export class AddEventTypeComponent {
       cantidadParticipantes: [1, [Validators.required, Validators.min(1)]],
       metricas: ['', Validators.required],
     });
+
+    this.sessionActive = this.session.getSession();
+    if(this.sessionActive.tipoUsuario == 'ADMIN'){
+      console.log('administrador');
+    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
+      this.router.navigate(['/**']);
+      console.log('entrenador');
+    }else{
+      this.router.navigate(['/**']);
+      console.log('atleta');
+    }
   }
 
   guardarTipoPersonalizado() {
