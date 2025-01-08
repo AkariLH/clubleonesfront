@@ -11,16 +11,19 @@ import { LoginComponent } from './login/login.component';
 import { CoachDashboardComponent } from './coach-dashboard/coach-dashboard.component';
 
 
+
+
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Página principal
   { path: 'eventos', component: EventsComponent }, // Página de eventos
-  { path: 'instalaciones', component: InstallationsComponent}, 
+  { path: 'instalaciones', component: InstallationsComponent }, 
   { path: 'registro-atletas', component: AthleteRegistrationComponent },
-  { path: 'crear-evento', component: CreateEventComponent},
-  {path:'agregar-tipo-evento',component:AddEventTypeComponent},
-  {path: 'registro-admin',component:AdministrationRegistrationComponent},
-  {path:'admin-dashboard', component:AdminDashboardComponent},
-  {path: 'crear-evento/:id', component: CreateEventComponent },
-  {path: 'login', component: LoginComponent},
-  {path: 'coach-dashboard', component: CoachDashboardComponent}
+  { path: 'crear-evento', component: CreateEventComponent  },
+  { path: 'agregar-tipo-evento', component: AddEventTypeComponent },
+  { path: 'registro-admin', component: AdministrationRegistrationComponent },
+  { path: 'admin-dashboard', component: AdminDashboardComponent},
+  { path: 'crear-evento/:id', component: CreateEventComponent},
+  { path: 'login', component: LoginComponent },
+  { path: 'coach-dashboard', component: CoachDashboardComponent },
 ];
+

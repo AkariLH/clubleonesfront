@@ -75,7 +75,7 @@ export class EventTableComponent implements OnInit {
           return {
             id: evento.idEvento,
             nombre: evento.nombre,
-            fecha: `${inicioEvento.toLocaleDateString()} - ${finEvento.toLocaleDateString()}`,
+            fecha: `${inicioEvento.toISOString().split('T')[0]} - ${finEvento.toISOString().split('T')[0]}`,
             entrenador: evento.entrenador ? evento.entrenador.nombre : 'No asignado',
             estado: estadoActual,
             tipo: evento.tipoEvento ? evento.tipoEvento.nombre : 'No especificado',

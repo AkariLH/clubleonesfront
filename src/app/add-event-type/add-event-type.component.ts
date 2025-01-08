@@ -43,6 +43,7 @@ export class AddEventTypeComponent {
           console.log('Tipo de evento creado:', response);
           this.tipoAgregado.emit(response); // Emitimos el tipo creado al componente padre
           this.formularioTipoPersonalizado.reset();
+          this.cerrarFormulario(); // Cierra el modal después de guardar exitosamente
         },
         error: (err: any) => {
           console.error('Error al crear el tipo de evento:', err);

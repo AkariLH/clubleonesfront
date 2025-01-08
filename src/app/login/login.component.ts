@@ -39,15 +39,27 @@ export class LoginComponent {
         contrasena: this.loginForm.value.password,
       };
   
-      // Inspeccionar el payload enviado
-      console.log('Datos enviados al backend:', loginPayload);
-  
-      this.http.post(this.loginService, loginPayload).subscribe({
+      this.http.post<UserDTO>(this.loginService, loginPayload, { withCredentials: true }).subscribe({
         next: (response) => {
           console.log('Respuesta del backend:', response);
+  
+          // Guardar información del usuario en localStorage o manejarla en el estado
+          localStorage.setItem('activeUser', JSON.stringify(response));
+          
+          // Redireccionar según el rol
+          if (response.rol === 'Administrador') {
+            this.router.navigate(['/admin-dashboard']);
+          } else if (response.rol === 'Atleta') {
+            this.router.navigate(['/athlete-dashboard']);
+          }
         },
         error: (err) => {
+          this.failedAttempts++;
           console.error('Error en el backend:', err);
+  
+          if (this.failedAttempts >= this.maxAttempts) {
+            this.showAdminContact = true;
+          }
         },
       });
     }
