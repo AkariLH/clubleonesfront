@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginComponent {
   loginService: string;
   loginObject: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private session: SessionService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -30,6 +31,7 @@ export class LoginComponent {
       "correo": "akari@suzumail.com",
       "contrasena": "amoasuzu"
     };
+    this.session.printCookie();
   }
 
   onLogin() {
