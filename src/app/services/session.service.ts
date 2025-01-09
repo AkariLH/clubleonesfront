@@ -32,4 +32,10 @@ export class SessionService {
     this.sessionActive = sess;
     return sess;
   }
+
+  public clearSession() {
+    this.cookieService.delete(this.sessionString);
+    console.log('Sesión eliminada correctamente.');
+  }
+  
 }

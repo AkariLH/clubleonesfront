@@ -14,14 +14,14 @@ import { Session } from '../classes/Session';
   imports: [RouterModule, EventTableComponent,CommonModule],
 })
 export class CoachDashboardComponent {
-  userRole: string = 'Entrenador'; // Rol del usuario autenticado
   atletas: any[] = [];
   eventos = [
     { id: 1, nombre: 'Evento 1', atletas: ['Atleta 1', 'Atleta 2', 'Atleta 3'] },
     { id: 2, nombre: 'Evento 2', atletas: ['Atleta 4', 'Atleta 5'] },
     { id: 3, nombre: 'Evento 3', atletas: ['Atleta 6', 'Atleta 7', 'Atleta 8'] },
   ];
-  private sessionActive: Session;
+  public nombreUsuario: string = '';
+  private sessionActive!: Session;
 
   constructor(private session: SessionService, private router: Router){
     this.sessionActive = this.session.getSession();
@@ -30,6 +30,14 @@ export class CoachDashboardComponent {
       console.log('administrador');
     }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
       console.log('entrenador');
+      const currentHour = new Date().getHours();
+      if (currentHour < 12) {
+        this.nombreUsuario = `Buenos días, ${this.sessionActive.nombre}`;
+      } else if (currentHour < 18) {
+        this.nombreUsuario = `Buenas tardes, ${this.sessionActive.nombre}`;
+      } else {
+        this.nombreUsuario = `Buenas noches, ${this.sessionActive.nombre}`;
+      }
     }else{
       this.router.navigate(['/**']);
       console.log('atleta');
@@ -39,5 +47,10 @@ export class CoachDashboardComponent {
   onEventoSeleccionado(evento: any) {
     const eventoEncontrado = this.eventos.find((e) => e.id === evento.id);
     this.atletas = eventoEncontrado ? eventoEncontrado.atletas : [];
+  }
+
+  logout() {
+    this.session.clearSession(); // Eliminar la sesión (implementaremos este método en SessionService)
+    this.router.navigate(['/login']); // Redirigir al login
   }
 }

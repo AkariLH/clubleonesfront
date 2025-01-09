@@ -14,13 +14,22 @@ import { Session } from '../classes/Session';
 })
 export class AdminDashboardComponent {
 
-  private sessionActive: Session;
+  public nombreUsuario: string = '';
+  private sessionActive!: Session;
   
   constructor(private session: SessionService, private router: Router){
     this.sessionActive = this.session.getSession();
     if(this.sessionActive.tipoUsuario == 'ADMIN'){
       console.log('administrador');
-    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
+      const currentHour = new Date().getHours();
+      if (currentHour < 12) {
+        this.nombreUsuario = `Buenos días, ${this.sessionActive.nombre}`;
+      } else if (currentHour < 18) {
+        this.nombreUsuario = `Buenas tardes, ${this.sessionActive.nombre}`;
+      } else {
+        this.nombreUsuario = `Buenas noches, ${this.sessionActive.nombre}`;
+      }      
+    }else if(this.sessionActive.tipoUsuario == 'ENTRENADOR'){
       this.router.navigate(['/**']);
       console.log('entrenador');
     }else{
@@ -28,4 +37,10 @@ export class AdminDashboardComponent {
       console.log('atleta');
     }
   }
+
+  logout() {
+    this.session.clearSession(); // Eliminar la sesión (implementaremos este método en SessionService)
+    this.router.navigate(['/login']); // Redirigir al login
+  }
+  
 }

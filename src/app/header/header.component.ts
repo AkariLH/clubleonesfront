@@ -22,18 +22,27 @@ export class HeaderComponent {
 
   }
 
-  checkSession(){
-    let ses: Session = this.session.getSession();
-    if(ses.tipoUsuario == 'ADMIN'){
-      this.router.navigate(['/admin-dashboard']);
-      console.log('Administrador')
-    }if(ses.tipoUsuario == 'ENTRENADOR'){
-      this.router.navigate(['/coach-dashboard']);
-      console.log('Entrenador')
-    }else if (ses.tipoUsuario == 'Atleta'){
-      console.log('atleta');
-    }else{
-      this.router.navigate(['/login'])
+  checkSession() {
+    try {
+      const ses: Session = this.session.getSession();
+
+      // Redirige al dashboard correspondiente según el tipo de usuario
+      if (ses.tipoUsuario === 'ADMIN') {
+        this.router.navigate(['/admin-dashboard']);
+        console.log('Administrador');
+      } else if (ses.tipoUsuario === 'ENTRENADOR') {
+        this.router.navigate(['/coach-dashboard']);
+        console.log('Entrenador');
+      } else if (ses.tipoUsuario === 'Atleta') {
+        console.log('Atleta');
+      } else {
+        // Si el tipo de usuario no es válido, redirige al login
+        this.router.navigate(['/login']);
+      }
+    } catch (error) {
+      // Maneja el caso en que no haya cookies o la sesión sea inválida
+      console.error('Error al obtener la sesión o sesión no válida:', error);
+      this.router.navigate(['/login']);
     }
   }
 }
