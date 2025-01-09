@@ -42,7 +42,7 @@ p {
   color: #555;
 }
 
-.view-more-btn {
+.view-more-btn{
   background-color: #ffd700;
   border: none;
   border-radius: 6px;
@@ -55,4 +55,19 @@ p {
 
 .view-more-btn:hover {
   background-color: #ffc107;
+}
+
+.register-btn {
+  background-color: #ffd700;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: #ffd700;
 }

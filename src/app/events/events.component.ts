@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 export class EventsComponent implements OnInit {
   eventos: any[] = []; // Todos los eventos desde el backend
   eventosSeleccionados: {
+    id: number;
     nombre: string;
     fechaInicioEvento: string;
     fechaFinEvento: string;
@@ -49,6 +50,7 @@ export class EventsComponent implements OnInit {
           }
   
           this.eventosAgrupados[claveFecha].push({
+            idEvento: evento.idEvento,
             nombre: evento.nombre,
             fechaInicioEvento: evento.fechaInicioEvento,
             fechaFinEvento: evento.fechaFinEvento,
@@ -86,9 +88,9 @@ export class EventsComponent implements OnInit {
   onDateSelected(fecha: Date) {
     const fechaClave = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
     const eventosDelDia = this.eventosAgrupados[fechaClave] || [];
-
-    // Mapear los datos a los detalles relevantes
+  
     this.eventosSeleccionados = eventosDelDia.map((evento) => ({
+      id: evento.idEvento, 
       nombre: evento.nombre,
       fechaInicioEvento: evento.fechaInicioEvento,
       fechaFinEvento: evento.fechaFinEvento,
@@ -96,5 +98,5 @@ export class EventsComponent implements OnInit {
       modalidades: evento.modalidades || 'No especificada',
       detalles: evento.detalles || 'Sin detalles',
     }));
-  }
+  }  
 }
