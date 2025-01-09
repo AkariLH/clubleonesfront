@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { EventTableComponent } from '../event-table/event-table.component';
 import { UserTableComponent } from '../user-table/user-table.component';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { Session } from '../classes/Session';
 
@@ -10,7 +10,7 @@ import { Session } from '../classes/Session';
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css'],
   standalone: true,
-  imports: [EventTableComponent, UserTableComponent,],
+  imports: [EventTableComponent, UserTableComponent,RouterModule],
 })
 export class AdminDashboardComponent {
 

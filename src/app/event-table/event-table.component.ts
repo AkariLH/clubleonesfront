@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { HostListener } from '@angular/core';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-event-table',
@@ -29,9 +30,16 @@ export class EventTableComponent implements OnInit {
   faFilter = faFilter;
   eventTypes: string[] = []; // Obtendremos los tipos de eventos desde el backend
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private sessionService: SessionService) {}
 
   ngOnInit(): void {
+    const session = this.sessionService.getSession();
+      if (session) {
+        this.userRole = session.tipoUsuario; // Asigna el rol del usuario
+        console.log('Rol del usuario activo:', this.userRole);
+      } else {
+        console.warn('No se encontró una sesión activa.');
+      }
     this.cargarEventos();
     this.cargarTiposDeEventos();
   

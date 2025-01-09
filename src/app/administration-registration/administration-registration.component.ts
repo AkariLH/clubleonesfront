@@ -46,7 +46,7 @@ export class AdministrationRegistrationComponent {
         nombre: this.userForm.value.nombre,
         correo: this.userForm.value.email,
         contrasena: this.userForm.value.contrasena,
-        rol: this.userForm.value.rol, // Debe ser 'ENTRENADOR' o 'ADMIN'
+        rol: this.userForm.value.rol, 
       };
   
       console.log('Datos del usuario a enviar:', usuario);
@@ -56,6 +56,7 @@ export class AdministrationRegistrationComponent {
           console.log('Administrador registrado:', response);
           alert('Administrador registrado con éxito');
           this.userForm.reset();
+          this.router.navigate(['/admin-dashboard']);
         },
         error: (err) => {
           console.error('Error al registrar administrador:', err);

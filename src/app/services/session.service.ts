@@ -15,7 +15,7 @@ export class SessionService {
     this.cookieService.set('Test', 'this is the Akari test');
     this.cookieValue = this.cookieService.get('Test');
     this.sessionString = 'lkasdjfapwoienca4i290iejdm2qp9iajnsdlfikj9a2';
-    this.sessionActive = new Session('', '', '');
+    this.sessionActive = new Session('', '', '', 0);
   }
 
   public printCookie(){

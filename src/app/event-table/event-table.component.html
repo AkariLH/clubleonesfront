@@ -64,8 +64,8 @@
           <p><strong>Tipo:</strong> {{ evento.tipo }}</p>
         </div>
         <div class="card-actions">
-          <button *ngIf="userRole === 'Administrador'" class="btn-secondary" (click)="editarEvento(evento)">Editar</button>
-          <button *ngIf="userRole === 'Administrador'" class="btn-danger" (click)="cancelarEvento(evento)">Cancelar</button>
+          <button *ngIf="userRole === 'ADMIN' && evento.estado !== 'FINALIZADO'" class="btn-secondary" (click)="editarEvento(evento)">Editar</button>
+          <button *ngIf="userRole === 'ADMIN' && evento.estado !== 'FINALIZADO' && evento.estado !== 'CANCELADO'" class="btn-danger" (click)="cancelarEvento(evento)">Cancelar</button>
         </div>
       </div>
     </div>    

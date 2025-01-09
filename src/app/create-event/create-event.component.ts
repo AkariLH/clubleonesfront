@@ -74,6 +74,7 @@ export class CreateEventComponent {
     });
 
     this.sessionActive = this.session.getSession();
+    console.log('ID del administrador:', this.sessionActive?.id);
     console.log(this.sessionActive)
     if(this.sessionActive.tipoUsuario == 'ADMIN'){
       console.log('administrador');
@@ -354,7 +355,7 @@ export class CreateEventComponent {
         detalles: this.eventForm.value.detalles,
         tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) },
         entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) },
-        administrador: { idAdministrador: 8 }, // Por ahora estático
+        administrador: { idAdministrador: this.sessionActive.id}, 
         estado: this.calcularEstado(),
       };
   
