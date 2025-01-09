@@ -109,3 +109,21 @@
     font-size: 0.9rem;
   }
 }
+
+.btn-secondary {
+  width: 100%;
+  background-color: #ffd700;
+  color: #333333;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e5b800;
+}

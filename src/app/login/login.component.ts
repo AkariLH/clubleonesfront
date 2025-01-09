@@ -67,4 +67,9 @@ export class LoginComponent {
       });
     }
   }  
+
+  onRegister() {
+    this.router.navigate(['/registro-atletas']); // Cambia '/register' a la ruta correspondiente
+  }
+  
 }

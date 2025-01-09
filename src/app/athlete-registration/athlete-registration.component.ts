@@ -3,8 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { SessionService } from '../services/session.service';
-import { Session } from '../classes/Session';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,10 +14,9 @@ import { Router } from '@angular/router';
 })
 export class AthleteRegistrationComponent {
   athleteForm: FormGroup;
-  private sessionActive: Session;
   private apiUrl = 'http://localhost:8080/api/atletas'; // URL del backend
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private session: SessionService, private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.athleteForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       apellidoPaterno: ['', [Validators.required, Validators.minLength(3)]],
@@ -33,15 +30,6 @@ export class AthleteRegistrationComponent {
       estatura: ['', [Validators.required, Validators.min(1), Validators.max(2.5)]],
     });
 
-    this.sessionActive = this.session.getSession();
-    if(this.sessionActive.tipoUsuario == 'ADMIN'){
-      console.log('administrador');
-    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
-      this.router.navigate(['/**']);
-      console.log('entrenador');
-    }else{
-      console.log('atleta');
-    }
   
   }
 
@@ -52,12 +40,12 @@ export class AthleteRegistrationComponent {
         apellidoPaterno: this.athleteForm.value.apellidoPaterno,
         apellidoMaterno: this.athleteForm.value.apellidoMaterno,
         fechaDeNacimiento: this.athleteForm.value.fechaNacimiento,
-        sexo: this.athleteForm.value.sexo.toUpperCase(), // Asegúrate de que el sexo esté en mayúsculas
+        sexo: this.athleteForm.value.sexo.toUpperCase(),
         correo: this.athleteForm.value.correo,
-        contrasena: this.athleteForm.value.contraseña,
+        contrasena: this.athleteForm.value.contrasena,
         peso: parseFloat(this.athleteForm.value.peso),
         estatura: parseFloat(this.athleteForm.value.estatura),
-        equipoId: this.athleteForm.value.equipoId || null, // Enviar null si no hay equipo
+        equipoId: this.athleteForm.value.equipoId || null, 
       };
   
       console.log('Datos enviados al backend:', atleta);
@@ -66,7 +54,7 @@ export class AthleteRegistrationComponent {
         next: (response) => {
           console.log('Respuesta del backend:', response);
           alert('Atleta registrado con éxito');
-          this.athleteForm.reset();
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Error al registrar atleta:', err);
