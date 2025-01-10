@@ -55,7 +55,7 @@ export class EventsComponent implements OnInit {
             fechaInicioEvento: evento.fechaInicioEvento,
             fechaFinEvento: evento.fechaFinEvento,
             categoria: evento.categoria,
-            modalidad: evento.modalidad,
+            modalidad: evento.modalidades,
             detalles: evento.detalles,
           });
         }
@@ -95,7 +95,7 @@ export class EventsComponent implements OnInit {
       fechaInicioEvento: evento.fechaInicioEvento,
       fechaFinEvento: evento.fechaFinEvento,
       categoria: evento.categoria || 'No especificada',
-      modalidades: evento.modalidades || 'No especificada',
+      modalidades: evento.modalidad || 'No especificada',
       detalles: evento.detalles || 'Sin detalles',
     }));
   }  

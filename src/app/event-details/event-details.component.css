@@ -42,32 +42,39 @@ p {
   color: #555;
 }
 
-.view-more-btn{
-  background-color: #ffd700;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 15px;
-  font-size: 1rem;
-  color: #000;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.view-more-btn:hover {
-  background-color: #ffc107;
-}
-
+.view-more-btn,
 .register-btn {
-  background-color: #ffd700;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 15px;
-  font-size: 1rem;
-  color: #000;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  background-color: #ffd700; /* Color amarillo */
+  border: 2px solid #ffc107; /* Borde más oscuro */
+  border-radius: 8px; /* Bordes más redondeados */
+  padding: 12px 20px; /* Tamaño del botón */
+  font-size: 1.1rem; /* Tamaño del texto */
+  font-weight: bold; /* Texto más destacado */
+  color: #000; /* Texto negro */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para resaltar */
 }
 
+.view-more-btn:hover,
 .register-btn:hover {
-  background-color: #ffd700;
+  background-color: #ffcc00; /* Color más claro al pasar el cursor */
+  border-color: #e6b800; /* Borde más destacado */
+  transform: translateY(-2px); /* Efecto de elevación */
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.15); /* Sombra más fuerte */
+}
+
+.view-more-btn:active,
+.register-btn:active {
+  transform: translateY(0); /* Elimina la elevación al hacer clic */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra estándar */
+}
+
+/* Separación ajustada entre botones */
+.button-group {
+  display: flex;
+  flex-direction: row; /* Los botones estarán en línea */
+  justify-content: space-between; /* Separar los botones al máximo */
+  gap: 8px; /* Espacio reducido entre los botones */
+  margin-top: 10px; /* Separación del contenido superior */
 }
