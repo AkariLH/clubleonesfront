@@ -374,7 +374,12 @@ export class CreateEventComponent {
     if (this.eventForm.valid) {
       const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T08:00:00`;
       const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T12:00:00`;
-  
+
+      const numIntegrantes =
+      this.modalidadSeleccionada === 'EQUIPO'
+        ? this.eventForm.value.numeroIntegrantes
+        : 1;
+
       const evento = {
         idEvento: this.eventForm.value.id,
         nombre: this.eventForm.value.nombre,
@@ -391,6 +396,7 @@ export class CreateEventComponent {
         entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) },
         administrador: { idAdministrador: this.sessionActive.id },
         estado: this.calcularEstado(),
+        numintegrantes: numIntegrantes,
       };
   
       console.log('Evento enviado:', JSON.stringify(evento, null, 2));
