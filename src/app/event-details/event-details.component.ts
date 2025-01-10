@@ -33,8 +33,8 @@ export class EventDetailsComponent {
       return;
     }
   
-    const atletaId = session.id; // Asegúrate de usar el campo correcto para el ID del atleta
-    const eventoId = event.id; // Utiliza 'id' porque se incluyó en el mapeo
+    const atletaId = session.id;
+    const eventoId = event.id; 
   
     this.http
       .post(`http://localhost:8080/api/atletas/${atletaId}/eventos/${eventoId}`, {})

@@ -23,12 +23,15 @@ export class CreateEventComponent {
   eventForm: FormGroup;
   areasDeportivas = ['Alberca Olímpica', 'Pista de Atletismo', 'Zona de Ciclismo Indoor', 'Zona de Spa y Relajación'];
   faTriangleExclamation = faTriangleExclamation; // Asignar el ícono para usarlo en la plantilla
-  tiposPredeterminados: { idTipoEvento: number; nombre: string }[] = [];
+  tiposPredeterminados: { idTipoEvento: number; nombre: string; modalidad: string; categoria: string }[] = [];
   tipoSeleccionado: string = '';
   formularioVisible: boolean = false;
   entrenadores: { idAdministrador: number; nombre: string }[] = [];
   formularioTipoPersonalizado!: FormGroup;
   private sessionActive: Session;
+  mostrarCampoNumeroIntegrantes: boolean = false;
+  modalidadSeleccionada: string = '';
+  categoriaSeleccionada: string = '';
 
   @Input() eventData: any = null;
   @Output() onSave = new EventEmitter<void>();
@@ -52,18 +55,18 @@ export class CreateEventComponent {
         fechaInicioEvento: ['', [Validators.required, this.validarFechaFutura]],
         fechaFinEvento: ['', [Validators.required, this.validarFechaFutura]],
         horarios: this.fb.array([]),
-        entrenadorAsignado: ['', Validators.required], // Campo para el entrenador
-        modalidades: ['', Validators.required], 
-        categoria: ['', Validators.required], 
+        entrenadorAsignado: ['', Validators.required], 
+        modalidades: [''], 
+        categoria: [''], 
         costo: ['', [Validators.required, Validators.min(0)]],
         detalles: ['', Validators.required],
         tipoSeleccionado: ['', Validators.required],
         cancelado: [false],
+        numeroIntegrantes: [1, Validators.min(1)], 
       },
       { validators: [this.validarFechasInscripcionYEvento] }
     );
   
-    // Inicialización del formulario para agregar tipos personalizados
     this.formularioTipoPersonalizado = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
@@ -74,7 +77,6 @@ export class CreateEventComponent {
     });
 
     this.sessionActive = this.session.getSession();
-    console.log('ID del administrador:', this.sessionActive?.id);
     console.log(this.sessionActive)
     if(this.sessionActive.tipoUsuario == 'ADMIN'){
       console.log('administrador');
@@ -102,34 +104,36 @@ export class CreateEventComponent {
     this.http.get(`${this.apiUrl}/${id}`).subscribe({
       next: (evento: any) => {
         console.log('Evento cargado para edición:', evento); // Depuración
-        // Convierte las fechas al formato yyyy-MM-dd
-        const formatDate = (dateString: string) => {
-          const date = new Date(dateString);
-          return date.toISOString().split('T')[0]; // Obtén solo la parte de la fecha
-        };
+        const formatDate = (dateString: string) => new Date(dateString).toISOString().split('T')[0];
   
+        // Actualiza el formulario
         this.eventForm.patchValue({
-          id: evento.idEvento, // Asegúrate de que el ID se asigna correctamente
+          id: evento.idEvento,
           nombre: evento.nombre,
           fechaInicioInscripcion: formatDate(evento.fechaInicioInscripciones),
           fechaCierreInscripcion: formatDate(evento.fechaFinInscripciones),
           fechaInicioEvento: formatDate(evento.fechaInicioEvento),
           fechaFinEvento: formatDate(evento.fechaFinEvento),
-          modalidades: evento.modalidades,
-          categoria: evento.categoria,
+          modalidades: evento.modalidades || '',
+          categoria: evento.categoria || '',
           costo: evento.costo,
           detalles: evento.detalles,
           tipoSeleccionado: evento.tipoEvento.idTipoEvento,
           entrenadorAsignado: evento.entrenador.idAdministrador,
           cancelado: evento.estado === 'CANCELADO',
+          numeroIntegrantes: evento.numeroIntegrantes || 1,
         });
-        this.isEditMode = true; // Asegura que el modo edición esté activo
+  
+        // Actualiza las variables auxiliares
+        this.modalidadSeleccionada = evento.modalidades || '';
+        this.categoriaSeleccionada = evento.categoria || '';
       },
       error: (err) => {
         console.error('Error al cargar el evento:', err);
       },
     });
   }
+  
 
   get horarios(): FormArray {
     return this.eventForm.get('horarios') as FormArray;
@@ -256,11 +260,34 @@ export class CreateEventComponent {
   }
   
   manejarSeleccion() {
-    if (this.tipoSeleccionado !== 'otro' && this.tipoSeleccionado.trim() !== '') {
-      console.log('Tipo seleccionado:', this.tipoSeleccionado);
+    const tipoEventoSeleccionado = this.tiposPredeterminados.find(
+      (tipo) => tipo.idTipoEvento === Number(this.eventForm.value.tipoSeleccionado)
+    );
+  
+    if (tipoEventoSeleccionado) {
+      // Actualiza las propiedades modalidad y categoría
+      this.modalidadSeleccionada = tipoEventoSeleccionado.modalidad;
+      this.categoriaSeleccionada = tipoEventoSeleccionado.categoria;
+  
+      // También actualiza los valores del formulario si es necesario
+      this.eventForm.patchValue({
+        modalidades: tipoEventoSeleccionado.modalidad,
+        categoria: tipoEventoSeleccionado.categoria,
+      });
+  
+      // Lógica para mostrar el campo de número de integrantes
+      this.mostrarCampoNumeroIntegrantes = tipoEventoSeleccionado.modalidad === 'EQUIPO';
+    } else {
+      // Resetea las propiedades si no hay selección válida
+      this.modalidadSeleccionada = '';
+      this.categoriaSeleccionada = '';
+      this.mostrarCampoNumeroIntegrantes = false;
     }
-  }
-
+  
+    console.log('Modalidad seleccionada:', this.modalidadSeleccionada);
+    console.log('Categoría seleccionada:', this.categoriaSeleccionada);
+  }  
+  
   abrirFormulario() {
     this.formularioVisible = true;
   }
@@ -282,7 +309,10 @@ export class CreateEventComponent {
         this.tiposPredeterminados = data.map(tipo => ({
           idTipoEvento: tipo.idTipoEvento,
           nombre: tipo.nombre,
+          categoria: tipo.categoria,
+          modalidad: tipo.modalidad,
         }));
+        console.log('Yipos de eventos procesados: ', this.tiposPredeterminados)
       },
       (error) => {
         console.error('Error al obtener los tipos de eventos:', error);
@@ -342,42 +372,44 @@ export class CreateEventComponent {
   
   onSubmit() {
     if (this.eventForm.valid) {
+      const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T08:00:00`;
+      const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T12:00:00`;
+  
       const evento = {
-        id: this.eventForm.value.id, // El ID debe estar aquí si es edición
+        idEvento: this.eventForm.value.id,
         nombre: this.eventForm.value.nombre,
         fechaInicioInscripciones: this.eventForm.value.fechaInicioInscripcion,
         fechaFinInscripciones: this.eventForm.value.fechaCierreInscripcion,
-        fechaInicioEvento: this.eventForm.value.fechaInicioEvento,
-        fechaFinEvento: this.eventForm.value.fechaFinEvento,
-        modalidades: this.eventForm.value.modalidades,
-        categoria: this.eventForm.value.categoria,
-        costo: this.eventForm.value.costo,
+        fechaInicioEvento: fechaInicioEvento,
+        fechaFinEvento: fechaFinEvento,
+        modalidades: this.modalidadSeleccionada,
+        categoria: this.categoriaSeleccionada,
+        costo: parseFloat(this.eventForm.value.costo).toFixed(2),
+        horario: " ",
         detalles: this.eventForm.value.detalles,
         tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) },
         entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) },
-        administrador: { idAdministrador: this.sessionActive.id}, 
+        administrador: { idAdministrador: this.sessionActive.id },
         estado: this.calcularEstado(),
       };
   
-      // Decide si es creación o edición
-      const isEditMode = !!evento.id; // Verifica si el ID está presente
-      console.log('Modo edición al guardar:', isEditMode, 'Evento:', evento); // Depuración
-      const method = isEditMode ? 'put' : 'post';
-      const url = isEditMode
-        ? `${this.apiUrl}/${evento.id}` // Endpoint para edición
-        : this.apiUrl; // Endpoint para creación
+      console.log('Evento enviado:', JSON.stringify(evento, null, 2));
+  
+      const method = evento.idEvento ? 'put' : 'post';
+      const url = evento.idEvento ? `${this.apiUrl}/${evento.idEvento}` : this.apiUrl;
   
       this.http[method](url, evento).subscribe({
         next: () => {
-          alert(isEditMode ? 'Evento actualizado con éxito' : 'Evento creado con éxito');
+          alert(evento.idEvento ? 'Evento actualizado con éxito' : 'Evento creado con éxito');
           this.router.navigate(['/admin-dashboard']);
         },
         error: (err) => {
           console.error('Error al guardar el evento:', err);
+          alert('Error al guardar el evento. Verifica los datos.');
         },
       });
     } else {
       alert('Por favor, completa todos los campos obligatorios.');
     }
-  }
+  }  
 }

@@ -13,7 +13,7 @@
     <!-- Tipo de evento -->
     <div>
       <label>Tipo de Evento:</label>
-      <select formControlName="tipoSeleccionado">
+      <select formControlName="tipoSeleccionado" (change)="manejarSeleccion()">
         <option value="" disabled selected>Selecciona un tipo de evento</option>
         <option *ngFor="let tipo of tiposPredeterminados" [value]="tipo.idTipoEvento">{{ tipo.nombre }}</option>
       </select>
@@ -104,45 +104,28 @@
       </div>
       <button (click)="agregarHorario()" type="button">Agregar Actividad</button>
     </div>
-    <!-- Modalidad -->
-    <div class="radio-section">
-      <h3>Modalidades de Participación:</h3>
-      <div class="radio-group">
-        <label>
-          <input formControlName="modalidades" type="radio" value="INDIVIDUAL" />
-          Individual
-        </label>
-        <label>
-          <input formControlName="modalidades" type="radio" value="EQUIPO" />
-          Equipo
-        </label>
+
+    <div>
+      <label>Modalidad:</label>
+      <p>{{ modalidadSeleccionada }}</p>
+    </div>  
+    <!-- Divisor -->
+    <div class="section-divider">
+    </div>
+    <div>
+      <label>Categoría:</label>
+      <p>{{ categoriaSeleccionada }}</p>
+    </div>
+    <div *ngIf="mostrarCampoNumeroIntegrantes">
+      <label>Número de Integrantes por Equipo:</label>
+      <input formControlName="numeroIntegrantes" type="number" min="1" />
+      <div *ngIf="eventForm.get('numeroIntegrantes')?.hasError('min') && eventForm.get('numeroIntegrantes')?.touched" class="error-text">
+        <fa-icon [icon]="faTriangleExclamation" class="error-icon"></fa-icon>
+        El número de integrantes debe ser mayor a 0.
       </div>
     </div>
     <!-- Divisor -->
     <div class="section-divider">
-
-    </div>
-    <!-- Categoría -->
-    <div class="radio-section">
-      <h3>Categoría:</h3>
-      <div class="radio-group">
-        <label>
-          <input formControlName="categoria" type="radio" value="VARONIL" />
-          Varonil
-        </label>
-        <label>
-          <input formControlName="categoria" type="radio" value="FEMENIL" />
-          Femenil
-        </label>
-        <label>
-          <input formControlName="categoria" type="radio" value="MIXTO" />
-          Mixto
-        </label>
-        <label>
-          <input formControlName="categoria" type="radio" value="INFANTIL" />
-          Infantil
-        </label>
-      </div>
     </div>
     <!-- Costo -->
     <div>

@@ -179,3 +179,10 @@ button:hover {
 .styled-checkbox:checked + label::after {
   opacity: 1;
 }
+
+p {
+  font-size: 1rem;
+  color: #444;
+  font-weight: bold;
+  margin-top: 5px;
+}
