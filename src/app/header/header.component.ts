@@ -34,6 +34,7 @@ export class HeaderComponent {
         this.router.navigate(['/coach-dashboard']);
         console.log('Entrenador');
       } else if (ses.tipoUsuario === 'Atleta') {
+        this.router.navigate(['/atleta-dashboard']);
         console.log('Atleta');
       } else {
         // Si el tipo de usuario no es válido, redirige al login

@@ -10,6 +10,7 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { LoginComponent } from './login/login.component';
 import { CoachDashboardComponent } from './coach-dashboard/coach-dashboard.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { AthleteDashboardComponent } from './athlete-dashboard/athlete-dashboard.component';
 
 
 
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: '', component: HomeComponent }, // Página principal
   { path: 'eventos', component: EventsComponent }, // Página de eventos
   { path: 'instalaciones', component: InstallationsComponent }, 
+  { path: 'atleta-dashboard', component: AthleteDashboardComponent},
   { path: 'registro-atletas', component: AthleteRegistrationComponent },
   { path: 'crear-evento', component: CreateEventComponent  },
   { path: 'agregar-tipo-evento', component: AddEventTypeComponent },
@@ -27,5 +29,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'coach-dashboard', component: CoachDashboardComponent },
   { path: '**', component: NotFoundComponent},
+  
 ];
 

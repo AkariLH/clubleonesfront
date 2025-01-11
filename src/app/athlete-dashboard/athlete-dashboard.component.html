@@ -1,0 +1,38 @@
+<div class="dashboard-container">
+  <!-- Saludo -->
+  <div class="welcome-message">
+    <h2 class="greeting">Buenas tardes, {{ atleta.nombre }}</h2>
+    <button class="logout-button" (click)="logout()">Cerrar Sesión</button>
+  </div>
+
+  <!-- Botones -->
+  <div class="button-panel">
+    <button class="btn-primary" (click)="descargarConstancias()">Descargar Constancias</button>
+    <button class="btn-primary" (click)="compartirLogros()">Compartir Logros</button>
+    <button class="btn-primary" (click)="editarDatos()">Editar Datos Personales</button>
+    <button class="btn-primary" (click)="verHistorico()">Estadísticas Históricas</button>
+  </div>
+
+  <!-- Contenedor principal -->
+  <div class="main-content">
+    <!-- Panel de datos personales -->
+    <div class="panel personal-data">
+      <h3>Datos Personales</h3>
+      <p><strong>Nombre:</strong> {{ atleta.nombre }}</p>
+      <p><strong>Edad:</strong> {{ atleta.edad }}</p>
+      <p><strong>Email:</strong> {{ atleta.email }}</p>
+    </div>
+
+    <!-- Panel de estadísticas -->
+    <div class="panel statistics">
+      <h3>Estadísticas</h3>
+      <p>Aquí irán las estadísticas del atleta.</p>
+    </div>
+
+    <!-- Tabla de eventos -->
+    <div class="panel event-table">
+      <h3>Eventos Inscritos</h3>
+      <app-event-table [userRole]="'Atleta'"></app-event-table>
+    </div>
+  </div>
+</div>
