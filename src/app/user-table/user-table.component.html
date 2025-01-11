@@ -8,7 +8,7 @@
     />
     <div class="filter-dropdown-container">
       <button class="btn-filter" (click)="toggleDropdown()">
-        <fa-icon [icon]="'filter'" class="filter-icon"></fa-icon>
+        <fa-icon [icon]="faFilter"></fa-icon>
         Filtrar
       </button>
       <div class="filter-dropdown" *ngIf="dropdownVisible">
@@ -27,18 +27,20 @@
     </div>
   </div>
 
-  <div class="cards">
-    <div class="card" *ngFor="let usuario of filteredUsuarios">
-      <div class="card-header">
-        <h3>{{ usuario.nombre }}</h3>
-        <span class="role">{{ usuario.rol }}</span>
-      </div>
-      <div class="card-content">
-        <p><strong>Correo:</strong> {{ usuario.correo }}</p>
-      </div>
-      <div class="card-actions">
-        <button class="btn-secondary">Editar</button>
-        <button class="btn-danger">Eliminar</button>
+  <div class="scrollable-content">
+    <div class="cards">
+      <div class="card" *ngFor="let usuario of filteredUsuarios">
+        <div class="card-header">
+          <h3>{{ usuario.nombre }}</h3>
+          <span class="role">{{ usuario.rol }}</span>
+        </div>
+        <div class="card-content">
+          <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn-secondary">Editar</button>
+          <button class="btn-danger">Eliminar</button>
+        </div>
       </div>
     </div>
   </div>

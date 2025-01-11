@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 interface Usuario {
   nombre: string;
@@ -27,7 +28,8 @@ export class UserTableComponent {
   searchTerm: string = '';
   selectedRole: string = '';
   dropdownVisible: boolean = false;
-
+  faFilter = faFilter;
+  
   get filteredUsuarios(): Usuario[] {
     if (!this.selectedRole || this.selectedRole === '') {
       return this.usuarios; // Mostrar todos si no hay filtro

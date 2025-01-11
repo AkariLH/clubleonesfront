@@ -5,14 +5,18 @@
     <!-- Panel de eventos -->
     <div class="panel">
       <h2>Eventos Registrados</h2>
-      <app-event-table [userRole]="userRole"></app-event-table>
+      <div class="scrollable-content">
+        <app-event-table [userRole]="userRole"></app-event-table>
+      </div>
       <button class="btn-primary" routerLink="/crear-evento">Crear Evento</button>
     </div>
 
     <!-- Panel de usuarios -->
     <div class="panel">
       <h2>Usuarios Registrados</h2>
-      <app-user-table></app-user-table>
+      <div class="scrollable-content">
+        <app-user-table></app-user-table>
+      </div>
       <button class="btn-primary" routerLink="/registro-admin">Agregar Usuario Administrativo</button>
       <button class="btn-primary" routerLink="/registro-atletas">Agregar Atleta</button>
     </div>

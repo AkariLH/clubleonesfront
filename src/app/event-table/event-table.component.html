@@ -1,5 +1,5 @@
 <div class="event-table-container">
-  <!-- Barra de búsqueda y botón de filtro -->
+  <!-- Barra de búsqueda -->
   <div class="search-container">
     <input
       type="text"
@@ -9,7 +9,7 @@
     />
     <div class="filter-dropdown-container">
       <button class="btn-filter" (click)="toggleDropdown()">
-        <fa-icon [icon]="'filter'" class="filter-icon"></fa-icon>
+        <fa-icon [icon]="faFilter"></fa-icon>
         Filtrar
       </button>
       <div class="filter-dropdown" *ngIf="dropdownVisible">
@@ -17,9 +17,9 @@
         <select [(ngModel)]="selectedStatus" id="status-filter" class="filter-dropdown-select">
           <option value="">Todos los estados</option>
           <option value="Inscripciones">Inscripciones</option>
-          <option value="Activo">Activo</option>
-          <option value="Finalizado">Finalizado</option>
-          <option value="Cancelado">Cancelado</option>
+          <option value="EN_CURSO">En Curso</option>
+          <option value="FINALIZADO">Finalizado</option>
+          <option value="CANCELADO">Cancelado</option>
         </select>
 
         <label for="type-filter">Tipo de evento:</label>
@@ -39,22 +39,35 @@
     </div>
   </div>
 
-  <!-- Tarjetas de eventos -->
-  <div class="cards">
-    <div class="card" *ngFor="let evento of filteredEventos" (click)="seleccionarEvento(evento)">
-      <div class="card-header">
-        <h3>{{ evento.nombre }}</h3>
-        <span class="status" [class]="evento.estado.toLowerCase()">{{ evento.estado }}</span>
+  <!-- Contenido scrollable con las tarjetas -->
+  <div class="scrollable-content">
+    <div class="cards">
+      <div class="card" *ngFor="let evento of displayedEventos">
+        <div class="card-header">
+          <h3>{{ evento.nombre }}</h3>
+          <span 
+            class="status" 
+            [ngClass]="{
+              'inscripciones': evento.estado === 'INSCRIPCIONES',
+              'en-curso': evento.estado === 'EN_CURSO',
+              'finalizado': evento.estado === 'FINALIZADO',
+              'cancelado': evento.estado === 'CANCELADO',
+              'error': evento.estado === 'ERROR'
+            }"
+          >
+            {{ evento.estado.replace('_', ' ') }}
+          </span>
+        </div>
+        <div class="card-content">
+          <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
+          <p><strong>Entrenador:</strong> {{ evento.entrenador }}</p>
+          <p><strong>Tipo:</strong> {{ evento.tipo }}</p>
+        </div>
+        <div class="card-actions">
+          <button *ngIf="userRole === 'Administrador'" class="btn-secondary" (click)="editarEvento(evento)">Editar</button>
+          <button *ngIf="userRole === 'Administrador'" class="btn-danger" (click)="cancelarEvento(evento)">Cancelar</button>
+        </div>
       </div>
-      <div class="card-content">
-        <p><strong>Fecha:</strong> {{ evento.fecha }}</p>
-        <p><strong>Entrenador:</strong> {{ evento.entrenador }}</p>
-        <p><strong>Tipo:</strong> {{ evento.tipo }}</p>
-      </div>
-      <div class="card-actions">
-        <button *ngIf="userRole === 'Administrador'" class="btn-secondary" (click)="editarEvento(evento)">Editar</button>
-        <button *ngIf="userRole === 'Administrador'" class="btn-danger" (click)="cancelarEvento(evento)">Cancelar</button>
-      </div>
-    </div>
+    </div>    
   </div>
 </div>

@@ -30,9 +30,15 @@
   color: #fff;
 }
 
-.status.activo {
-  background-color: #28a745;
+.status.en-curso {
+  background-color: #17a2b8; /* Color de fondo para "EN CURSO" */
+  color: #fff; /* Color del texto */
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-transform: uppercase; /* Opcional: para asegurarte de que se vea en mayúsculas */
 }
+
 
 .status.finalizado {
   background-color: #dc3545;
@@ -244,4 +250,9 @@
   width: 400px;
   max-width: 90%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.scrollable-content {
+  overflow-y: auto;
+  max-height: 300px; /* Ajusta la altura máxima para las tarjetas */
 }
