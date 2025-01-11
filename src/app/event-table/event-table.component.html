@@ -20,6 +20,7 @@
           <option value="EN_CURSO">En Curso</option>
           <option value="FINALIZADO">Finalizado</option>
           <option value="CANCELADO">Cancelado</option>
+          <option value="PENDIENTE">Pendiente</option>
         </select>
 
         <label for="type-filter">Tipo de evento:</label>
@@ -52,6 +53,7 @@
               'en-curso': evento.estado === 'EN_CURSO',
               'finalizado': evento.estado === 'FINALIZADO',
               'cancelado': evento.estado === 'CANCELADO',
+              'pendiente': evento.estado === 'PENDIENTE',
               'error': evento.estado === 'ERROR'
             }"
           >

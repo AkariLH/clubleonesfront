@@ -28,7 +28,7 @@ export class EventTableComponent implements OnInit {
   selectedDate: string = '';
   dropdownVisible: boolean = false;
   faFilter = faFilter;
-  eventTypes: string[] = [];
+  eventTypes: string[] = []; // Obtendremos los tipos de eventos desde el backend
 
   constructor(private router: Router, private http: HttpClient, private sessionService: SessionService) {}
 
@@ -50,58 +50,68 @@ export class EventTableComponent implements OnInit {
   }
 
   cargarEventos() {
-    this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe(
-      (response) => {
-        const fechaActual = new Date();
-  
-        this.eventos = response.map((evento) => {
-          const inicioInscripcion = new Date(evento.fechaInicioInscripciones);
-          const cierreInscripcion = new Date(evento.fechaFinInscripciones);
-          const inicioEvento = new Date(evento.fechaInicioEvento);
-          const finEvento = new Date(evento.fechaFinEvento);
-  
-          const estadoActual = this.obtenerEstadoActual(
-            evento.estado,
-            fechaActual,
-            inicioInscripcion,
-            cierreInscripcion,
-            inicioEvento,
-            finEvento
-          );
-  
-          // Actualiza el estado en el backend si ha cambiado
-          if (estadoActual !== evento.estado) {
-            this.actualizarEstadoEvento(
-              {
-                id: evento.idEvento, // Asegúrate de usar el campo correcto del backend
-                ...evento
-              },
-              estadoActual
-            );
-          }          
-  
-          return {
-            id: evento.idEvento,
-            nombre: evento.nombre,
-            fecha: `${inicioEvento.toISOString().split('T')[0]} - ${finEvento.toISOString().split('T')[0]}`,
-            entrenador: evento.entrenador ? evento.entrenador.nombre : 'No asignado',
-            estado: estadoActual,
-            tipo: evento.tipoEvento ? evento.tipoEvento.nombre : 'No especificado',
-            detalles: evento.detalles,
-            modalidad: evento.modalidades,
-            categoria: evento.categoria,
-            costo: evento.costo,
-          };
-        });
-  
-        this.filteredEventos = [...this.eventos]; // Copia los eventos para filtros
-        console.log('Eventos cargados y estados actualizados:', this.eventos);
-      },
-      (error) => {
-        console.error('Error al cargar eventos:', error);
-      }
-    );
+    const session = this.sessionService.getSession();
+    
+    if (session.tipoUsuario === 'ENTRENADOR') {
+      // Llamar al endpoint específico para eventos del entrenador
+      this.http.get<any[]>(`http://localhost:8080/api/eventos/entrenador/${session.id}`).subscribe(
+        (response) => {
+          this.procesarEventos(response); // Usa un método común para procesar los eventos
+        },
+        (error) => {
+          console.error('Error al cargar eventos del entrenador:', error);
+        }
+      );
+    } else {
+      // Si no es entrenador, cargar todos los eventos (para administradores)
+      this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe(
+        (response) => {
+          this.procesarEventos(response);
+        },
+        (error) => {
+          console.error('Error al cargar eventos:', error);
+        }
+      );
+    }
   }
+  
+  // Método para procesar eventos
+  procesarEventos(eventos: any[]) {
+    const fechaActual = new Date();
+  
+    this.eventos = eventos.map((evento) => {
+      const inicioInscripcion = new Date(evento.fechaInicioInscripciones);
+      const cierreInscripcion = new Date(evento.fechaFinInscripciones);
+      const inicioEvento = new Date(evento.fechaInicioEvento);
+      const finEvento = new Date(evento.fechaFinEvento);
+  
+      const estadoActual = this.obtenerEstadoActual(
+        evento.estado,
+        fechaActual,
+        inicioInscripcion,
+        cierreInscripcion,
+        inicioEvento,
+        finEvento
+      );
+  
+      return {
+        id: evento.idEvento,
+        nombre: evento.nombre,
+        fecha: `${inicioEvento.toISOString().split('T')[0]} - ${finEvento.toISOString().split('T')[0]}`,
+        entrenador: evento.entrenador ? evento.entrenador.nombre : 'No asignado',
+        estado: estadoActual,
+        tipo: evento.tipoEvento ? evento.tipoEvento.nombre : 'No especificado',
+        detalles: evento.detalles,
+        modalidad: evento.modalidades,
+        categoria: evento.categoria,
+        costo: evento.costo,
+      };
+    });
+  
+    this.filteredEventos = [...this.eventos]; // Actualiza la lista filtrada
+    console.log('Eventos cargados:', this.eventos);
+  }
+  
     
   /*** Función para determinar el estado actual del evento.*/
   obtenerEstadoActual(
@@ -118,7 +128,7 @@ export class EventTableComponent implements OnInit {
     const cierreInscripcionSinHora = new Date(cierreInscripcion.getFullYear(), cierreInscripcion.getMonth(), cierreInscripcion.getDate());
     const inicioEventoSinHora = new Date(inicioEvento.getFullYear(), inicioEvento.getMonth(), inicioEvento.getDate());
     const finEventoSinHora = new Date(finEvento.getFullYear(), finEvento.getMonth(), finEvento.getDate());
-    
+  
     // Si el evento está cancelado, mantenerlo como CANCELADO
     if (estado === 'CANCELADO') {
       return 'CANCELADO';
@@ -231,11 +241,7 @@ export class EventTableComponent implements OnInit {
       return;
     }
   
-    const eventoActualizado = { ...evento, estado: nuevoEstado };
-    delete eventoActualizado.id; 
-  
-    console.log('Datos enviados al actualizar estado:', eventoActualizado);
-    this.http.put(`http://localhost:8080/api/eventos/${evento.idEvento}`, eventoActualizado)
+    this.http.put(`http://localhost:8080/api/eventos/${evento.id}`, { ...evento, estado: nuevoEstado })
       .subscribe(
         () => console.log(`Estado del evento actualizado a ${nuevoEstado}`),
         (error) => console.error('Error al actualizar el estado:', error)

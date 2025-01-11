@@ -256,3 +256,12 @@
   overflow-y: auto;
   max-height: 300px; /* Ajusta la altura máxima para las tarjetas */
 }
+
+.status.pendiente {
+  background-color: #6c757d; /* Gris */
+  color: #ffffff; /* Texto blanco */
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
