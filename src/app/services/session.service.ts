@@ -10,6 +10,7 @@ export class SessionService {
   private cookieValue: string;
   private sessionString: string;
   public sessionActive: Session;
+  
 
   constructor(private cookieService: CookieService){
     this.cookieService.set('Test', 'this is the Akari test');

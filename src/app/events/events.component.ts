@@ -21,6 +21,7 @@ export class EventsComponent implements OnInit {
     categoria: string;
     modalidades: string;
     detalles: string;
+    estado: string;
   }[] = []; // Detalles del día seleccionado
   eventosAgrupados: { [key: string]: any[] } = {}; // Agrupados por fecha
 
@@ -57,6 +58,7 @@ export class EventsComponent implements OnInit {
             categoria: evento.categoria,
             modalidad: evento.modalidades,
             detalles: evento.detalles,
+            estado: evento.estado,
           });
         }
       });
@@ -65,7 +67,6 @@ export class EventsComponent implements OnInit {
     });
   }
    
-
   cargarEventos() {
     this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe({
       next: (eventos) => {
@@ -97,6 +98,7 @@ export class EventsComponent implements OnInit {
       categoria: evento.categoria || 'No especificada',
       modalidades: evento.modalidad || 'No especificada',
       detalles: evento.detalles || 'Sin detalles',
+      estado: evento.estado,
     }));
   }  
 }

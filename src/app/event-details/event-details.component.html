@@ -6,9 +6,21 @@
     <p><strong>Categoría:</strong> {{ event.categoria }}</p>
     <p><strong>Modalidad:</strong> {{ event.modalidades }}</p>
     <p><strong>Detalles:</strong> {{ event.detalles }}</p>
+    <p class="card-text">
+      Estado: 
+      <span [ngClass]="{
+        'text-success': event.estado === 'En Inscripción',
+        'text-warning': event.estado === 'Próximo',
+        'text-danger': event.estado === 'Finalizado'
+      }">
+        <strong>{{ event.estado }}</strong>
+      </span>
+    </p>
     <div class="button-group">
       <button class="view-more-btn" (click)="verMas(event)">Ver Más</button>
-      <button class="register-btn" (click)="inscribirse(event)">Inscribirse</button>
+      <button class="register-btn" (click)="inscribirse(event)">
+        {{ tipoUsuario === 'ADMIN' ? 'Inscribir Atleta' : 'Inscribirse' }}
+      </button>
     </div>
   </div>
 </div>
