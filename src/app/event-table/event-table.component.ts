@@ -28,7 +28,7 @@ export class EventTableComponent implements OnInit {
   selectedDate: string = '';
   dropdownVisible: boolean = false;
   faFilter = faFilter;
-  eventTypes: string[] = []; // Obtendremos los tipos de eventos desde el backend
+  eventTypes: string[] = [];
 
   constructor(private router: Router, private http: HttpClient, private sessionService: SessionService) {}
 
@@ -118,7 +118,7 @@ export class EventTableComponent implements OnInit {
     const cierreInscripcionSinHora = new Date(cierreInscripcion.getFullYear(), cierreInscripcion.getMonth(), cierreInscripcion.getDate());
     const inicioEventoSinHora = new Date(inicioEvento.getFullYear(), inicioEvento.getMonth(), inicioEvento.getDate());
     const finEventoSinHora = new Date(finEvento.getFullYear(), finEvento.getMonth(), finEvento.getDate());
-  
+    
     // Si el evento está cancelado, mantenerlo como CANCELADO
     if (estado === 'CANCELADO') {
       return 'CANCELADO';
@@ -146,7 +146,7 @@ export class EventTableComponent implements OnInit {
     }
   
     // Por defecto, si no cae en ninguno de los estados anteriores
-    return 'FINALIZADO';
+    return 'PENDIENTE';
   }
    
   
@@ -231,7 +231,11 @@ export class EventTableComponent implements OnInit {
       return;
     }
   
-    this.http.put(`http://localhost:8080/api/eventos/${evento.id}`, { ...evento, estado: nuevoEstado })
+    const eventoActualizado = { ...evento, estado: nuevoEstado };
+    delete eventoActualizado.id; 
+  
+    console.log('Datos enviados al actualizar estado:', eventoActualizado);
+    this.http.put(`http://localhost:8080/api/eventos/${evento.idEvento}`, eventoActualizado)
       .subscribe(
         () => console.log(`Estado del evento actualizado a ${nuevoEstado}`),
         (error) => console.error('Error al actualizar el estado:', error)
@@ -241,8 +245,6 @@ export class EventTableComponent implements OnInit {
   @HostListener('document:click', ['$event'])
     onDocumentClick(event: MouseEvent): void {
       const target = event.target as HTMLElement;
-  
-      // Verifica si el clic fue fuera del dropdown
       if (
         !target.closest('.filter-dropdown-container') &&
         this.dropdownVisible

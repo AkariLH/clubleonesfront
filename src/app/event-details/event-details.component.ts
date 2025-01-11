@@ -30,7 +30,7 @@ export class EventDetailsComponent implements OnInit {
 
   ngOnInit() {
     const session = this.sessionService.getSession();
-    this.tipoUsuario = session ? session.tipoUsuario : null;
+    this.tipoUsuario = session.tipoUsuario || null;
   }
 
   verMas(event: any): void {
@@ -39,7 +39,7 @@ export class EventDetailsComponent implements OnInit {
 
   inscribirse(event: any): void {
     const session = this.sessionService.getSession();
-    if (!session) {
+    if (!session.tipoUsuario) {
       alert('Debes iniciar sesión para inscribirte a un evento.');
       this.router.navigate(['/login']); // Redirige a la página de inicio de sesión
       return;

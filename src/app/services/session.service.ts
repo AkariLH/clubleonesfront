@@ -7,36 +7,42 @@ import { Session } from '../classes/Session';
 })
 export class SessionService {
 
-  private cookieValue: string;
-  private sessionString: string;
+  private sessionKey: string = 'userSession';
   public sessionActive: Session;
-  
 
-  constructor(private cookieService: CookieService){
+  constructor(private cookieService: CookieService) {
     this.cookieService.set('Test', 'this is the Akari test');
-    this.cookieValue = this.cookieService.get('Test');
-    this.sessionString = 'lkasdjfapwoienca4i290iejdm2qp9iajnsdlfikj9a2';
     this.sessionActive = new Session('', '', '', 0);
   }
 
-  public printCookie(){
-    console.log(this.cookieValue);
+  public printCookie() {
+    console.log(this.cookieService.getAll());
   }
 
-  public saveSession(session: Session){
-    this.cookieService.set(this.sessionString, JSON.stringify(session));
+  public saveSession(session: Session) {
+    this.cookieService.set(this.sessionKey, JSON.stringify(session));
+    this.sessionActive = session;
   }
 
-  public getSession(): Session{
-    let sess: Session;
-    sess = JSON.parse(this.cookieService.get(this.sessionString));
-    this.sessionActive = sess;
-    return sess;
+  public getSession(): Session {
+    const sessionData = this.cookieService.get(this.sessionKey);
+    if (!sessionData) {
+      return new Session('', '', '', 0); // Devuelve un objeto Session vacío
+    }
+
+    try {
+      const session = JSON.parse(sessionData) as Session;
+      this.sessionActive = session;
+      return session;
+    } catch (error) {
+      console.error('Error parsing session data:', error);
+      return new Session('', '', '', 0); // Devuelve un objeto Session vacío en caso de error
+    }
   }
 
   public clearSession() {
-    this.cookieService.delete(this.sessionString);
+    this.cookieService.delete(this.sessionKey);
+    this.sessionActive = new Session('', '', '', 0);
     console.log('Sesión eliminada correctamente.');
   }
-  
 }

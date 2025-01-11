@@ -350,30 +350,53 @@ export class CreateEventComponent {
   calcularEstado(): string {
     const cancelado = this.eventForm.get('cancelado')?.value;
     const fechaActual = new Date();
-    const inicioInscripcion = new Date(this.eventForm.get('fechaInicioInscripcion')?.value);
-    const cierreInscripcion = new Date(this.eventForm.get('fechaCierreInscripcion')?.value);
-    const inicioEvento = new Date(this.eventForm.get('fechaInicioEvento')?.value);
-    const finEvento = new Date(this.eventForm.get('fechaFinEvento')?.value);
+    const inicioInscripcion = new Date(this.eventForm.value.fechaInicioInscripcion);
+    const cierreInscripcion = new Date(this.eventForm.value.fechaCierreInscripcion);
+    const inicioEvento = new Date(this.eventForm.value.fechaInicioEvento);
+    const finEvento = new Date(this.eventForm.value.fechaFinEvento);
+  
+    // Sumar un día a las fechas de inscripción y del evento
+    inicioInscripcion.setDate(inicioInscripcion.getDate() + 1);
+    cierreInscripcion.setDate(cierreInscripcion.getDate() + 1);
+    inicioEvento.setDate(inicioEvento.getDate() + 1);
+    finEvento.setDate(finEvento.getDate() + 1);
+
+    inicioInscripcion.setHours(0, 0, 0, 0);
+    cierreInscripcion.setHours(23, 59, 59, 999);
+    inicioEvento.setHours(0, 0, 0, 0);
+    finEvento.setHours(23, 59, 59, 999);
+
+  
+    console.log('Fecha Actual:', fechaActual);
+    console.log('Inicio Inscripción:', inicioInscripcion);
+    console.log('Cierre Inscripción (ajustada):', cierreInscripcion);
+    console.log('Inicio Evento:', inicioEvento);
+    console.log('Fin Evento (ajustada):', finEvento);
   
     if (cancelado) {
       return "CANCELADO";
     }
   
-    if (fechaActual >= inicioInscripcion && fechaActual <= cierreInscripcion) {
+    if (fechaActual >= inicioInscripcion && fechaActual < cierreInscripcion) {
       return "INSCRIPCIONES";
     }
   
-    if (fechaActual >= inicioEvento && fechaActual <= finEvento) {
-      return "EN CURSO";
+    if (fechaActual >= inicioEvento && fechaActual < finEvento) {
+      return "EN_CURSO";
     }
   
-    return "FINALIZADO"; // Estado por defecto si no cumple ninguna de las condiciones anteriores
+    if (fechaActual >= finEvento) {
+      return "FINALIZADO";
+    }
+  
+    return "PENDIENTE"; // Estado por defecto si no cumple ninguna de las condiciones anteriores
   }
+  
   
   onSubmit() {
     if (this.eventForm.valid) {
-      const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T08:00:00`;
-      const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T12:00:00`;
+      const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T00:00:00`;
+      const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T23:59:59`;
 
       const numIntegrantes =
       this.modalidadSeleccionada === 'EQUIPO'
