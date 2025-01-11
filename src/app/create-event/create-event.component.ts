@@ -17,6 +17,7 @@ import { AdministracionService } from '../services/administracion.service';
   imports: [ReactiveFormsModule, CommonModule,FontAwesomeModule,FormsModule,AddEventTypeComponent],
 })
 export class CreateEventComponent {  
+  isEditMode: boolean = false;
   eventForm: FormGroup;
   areasDeportivas = ['Alberca Olímpica', 'Pista de Atletismo', 'Zona de Ciclismo Indoor', 'Zona de Spa y Relajación'];
   faTriangleExclamation = faTriangleExclamation; // Asignar el ícono para usarlo en la plantilla
@@ -69,12 +70,47 @@ export class CreateEventComponent {
   }
 
   ngOnInit() {
+    const eventId = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = !!eventId; // Verifica si hay un ID
+    console.log('Modo edición:', this.isEditMode); // Depuración
+    if (this.isEditMode) {
+      this.loadEvent(eventId!); // Carga los datos del evento
+    }
     this.obtenerTiposEventos();
     this.obtenerEntrenadores();
-    const eventId = this.route.snapshot.paramMap.get('id');
-    if (eventId) {
-      this.loadEvent(eventId); // Carga los datos del evento
-    }
+  }  
+  
+  loadEvent(id: string) {
+    this.http.get(`${this.apiUrl}/${id}`).subscribe({
+      next: (evento: any) => {
+        console.log('Evento cargado para edición:', evento); // Depuración
+        // Convierte las fechas al formato yyyy-MM-dd
+        const formatDate = (dateString: string) => {
+          const date = new Date(dateString);
+          return date.toISOString().split('T')[0]; // Obtén solo la parte de la fecha
+        };
+  
+        this.eventForm.patchValue({
+          id: evento.idEvento, // Asegúrate de que el ID se asigna correctamente
+          nombre: evento.nombre,
+          fechaInicioInscripcion: formatDate(evento.fechaInicioInscripciones),
+          fechaCierreInscripcion: formatDate(evento.fechaFinInscripciones),
+          fechaInicioEvento: formatDate(evento.fechaInicioEvento),
+          fechaFinEvento: formatDate(evento.fechaFinEvento),
+          modalidades: evento.modalidades,
+          categoria: evento.categoria,
+          costo: evento.costo,
+          detalles: evento.detalles,
+          tipoSeleccionado: evento.tipoEvento.idTipoEvento,
+          entrenadorAsignado: evento.entrenador.idAdministrador,
+          cancelado: evento.estado === 'CANCELADO',
+        });
+        this.isEditMode = true; // Asegura que el modo edición esté activo
+      },
+      error: (err) => {
+        console.error('Error al cargar el evento:', err);
+      },
+    });
   }
 
   get horarios(): FormArray {
@@ -101,46 +137,38 @@ export class CreateEventComponent {
     while (this.horarios.length !== 0) {
       this.horarios.removeAt(0);
     }
-  }
-
-  loadEvent(id: string) {
-    this.http.get(`${this.apiUrl}/${id}`).subscribe({
-      next: (evento: any) => {
-        this.eventForm.patchValue(evento); // Llena el formulario con los datos del evento
-      },
-      error: (err) => {
-        console.error('Error al cargar el evento:', err);
-      },
-    });
-  }
+  }  
 
   cancelar() {
     this.router.navigate(['/admin-dashboard']);
   }
 
-  validarFechaFutura(control: AbstractControl) {
-    const fecha = control.value;
   
-    if (fecha) {
-      const fechaIngresada = new Date(fecha);
-      const hoy = new Date();
-  
-      // Restamos un día al valor de "hoy" para permitir la fecha de ayer y hoy
-      const limite = new Date();
-      limite.setDate(hoy.getDate() - 1); // Resta un día
-      limite.setHours(0, 0, 0, 0); // Normaliza a las 00:00:00
-      fechaIngresada.setHours(0, 0, 0, 0); // Normaliza también la fecha ingresada
-  
-      console.log('Fecha ingresada:', fechaIngresada);
-      console.log('Fecha límite (ayer):', limite);
-  
-      // Compara si la fecha ingresada es anterior al límite
-      if (fechaIngresada < limite) {
-        return { fechaAnterior: true }; // Retorna error si es anterior al límite
+  validarFechaFutura(isEditMode: boolean) {
+    return (control: AbstractControl) => {
+      const fecha = control.value;
+
+      if (fecha) {
+        const fechaIngresada = new Date(fecha);
+        const hoy = new Date();
+    
+        // Restamos un día al valor de "hoy" para permitir la fecha de ayer y hoy
+        const limite = new Date();
+        limite.setDate(hoy.getDate() - 1); // Resta un día
+        limite.setHours(0, 0, 0, 0); // Normaliza a las 00:00:00
+        fechaIngresada.setHours(0, 0, 0, 0); // Normaliza también la fecha ingresada
+    
+        console.log('Fecha ingresada:', fechaIngresada);
+        console.log('Fecha límite (ayer):', limite);
+
+        // Si no estamos en modo edición y la fecha es anterior a hoy
+        if (!isEditMode && fechaIngresada < hoy) {
+          return { fechaAnterior: true }; // Error si no estamos en modo edición
+        }
       }
-    }
-  
-    return null; // No hay error
+
+      return null; // No hay error
+    };
   }
   
   validarFechasInscripcionYEvento(group: FormGroup) {
@@ -296,8 +324,8 @@ export class CreateEventComponent {
   
   onSubmit() {
     if (this.eventForm.valid) {
-      const estadoCalculado = this.calcularEstado();
       const evento = {
+        id: this.eventForm.value.id, // El ID debe estar aquí si es edición
         nombre: this.eventForm.value.nombre,
         fechaInicioInscripciones: this.eventForm.value.fechaInicioInscripcion,
         fechaFinInscripciones: this.eventForm.value.fechaCierreInscripcion,
@@ -306,23 +334,28 @@ export class CreateEventComponent {
         modalidades: this.eventForm.value.modalidades,
         categoria: this.eventForm.value.categoria,
         costo: this.eventForm.value.costo,
-        horario: "",
         detalles: this.eventForm.value.detalles,
-        tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) }, 
-        entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) }, 
+        tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) },
+        entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) },
         administrador: { idAdministrador: 8 }, // Por ahora estático
-        estado: estadoCalculado,
+        estado: this.calcularEstado(),
       };
   
-      console.log('Payload enviado:', evento);
+      // Decide si es creación o edición
+      const isEditMode = !!evento.id; // Verifica si el ID está presente
+      console.log('Modo edición al guardar:', isEditMode, 'Evento:', evento); // Depuración
+      const method = isEditMode ? 'put' : 'post';
+      const url = isEditMode
+        ? `${this.apiUrl}/${evento.id}` // Endpoint para edición
+        : this.apiUrl; // Endpoint para creación
   
-      this.http.post(this.apiUrl, evento).subscribe({
+      this.http[method](url, evento).subscribe({
         next: () => {
-          alert('Evento creado con éxito');
+          alert(isEditMode ? 'Evento actualizado con éxito' : 'Evento creado con éxito');
           this.router.navigate(['/admin-dashboard']);
         },
         error: (err) => {
-          console.error('Error al crear el evento:', err);
+          console.error('Error al guardar el evento:', err);
         },
       });
     } else {
