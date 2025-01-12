@@ -97,8 +97,8 @@
         <label>Hora de Finalización:</label>
         <input formControlName="horaFin" type="time" />
         <label>Zona Deportiva:</label>
-        <select formControlName="zonaDeportiva">
-          <option *ngFor="let area of areasDeportivas" [value]="area">{{ area }}</option>
+        <select formControlName="zonaDeportiva" id="zonaDeportiva" required>
+          <option *ngFor="let area of areasDeportivas" [value]="area.nombre">{{ area.nombre }}</option>
         </select>
         <button (click)="eliminarHorario(i)" type="button">Eliminar</button>
       </div>

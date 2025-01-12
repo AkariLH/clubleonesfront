@@ -10,6 +10,7 @@ import { TipoEventoService } from '../services/tipo-evento.service';
 import { AdministracionService } from '../services/administracion.service';
 import { SessionService } from '../services/session.service';
 import { Session } from '../classes/Session';
+import { InstalacionService } from '../services/instalaciones.service';
 
 @Component({
   selector: 'app-create-event',
@@ -21,7 +22,7 @@ import { Session } from '../classes/Session';
 export class CreateEventComponent {  
   isEditMode: boolean = false;
   eventForm: FormGroup;
-  areasDeportivas = ['Alberca Olímpica', 'Pista de Atletismo', 'Zona de Ciclismo Indoor', 'Zona de Spa y Relajación'];
+  areasDeportivas: {id:number; nombre:string; descripcion:string}[] = [];
   faTriangleExclamation = faTriangleExclamation; // Asignar el ícono para usarlo en la plantilla
   tiposPredeterminados: { idTipoEvento: number; nombre: string; modalidad: string; categoria: string }[] = [];
   tipoSeleccionado: string = '';
@@ -44,7 +45,8 @@ export class CreateEventComponent {
               private http: HttpClient, 
               private tipoEventoService: TipoEventoService, 
               private administracionService: AdministracionService,
-              private session: SessionService) {
+              private session: SessionService,
+              private instalacionService: InstalacionService) {
     // Inicialización del formulario principal
     this.eventForm = this.fb.group(
       {
@@ -98,6 +100,7 @@ export class CreateEventComponent {
     }
     this.obtenerTiposEventos();
     this.obtenerEntrenadores();
+    this.obtenerAreasDeportivas();
   }  
   
   loadEvent(id: string) {
@@ -391,7 +394,18 @@ export class CreateEventComponent {
   
     return "PENDIENTE"; // Estado por defecto si no cumple ninguna de las condiciones anteriores
   }
-  
+
+  obtenerAreasDeportivas() {
+    this.instalacionService.getInstalaciones().subscribe(
+      (response) => {
+        this.areasDeportivas = response;
+        console.log('Áreas deportivas:', this.areasDeportivas);
+      },
+      (error) => {
+        console.error('Error al obtener las áreas deportivas:', error);
+      }
+    );
+  }
   
   onSubmit() {
     if (this.eventForm.valid) {
