@@ -51,19 +51,29 @@ export class EventTableComponent implements OnInit {
 
   cargarEventos() {
     const session = this.sessionService.getSession();
-    
+  
     if (session.tipoUsuario === 'ENTRENADOR') {
       // Llamar al endpoint específico para eventos del entrenador
       this.http.get<any[]>(`http://localhost:8080/api/eventos/entrenador/${session.id}`).subscribe(
         (response) => {
-          this.procesarEventos(response); // Usa un método común para procesar los eventos
+          this.procesarEventos(response);
         },
         (error) => {
           console.error('Error al cargar eventos del entrenador:', error);
         }
       );
+    } else if (session.tipoUsuario === 'Atleta') {
+      // Llamar al endpoint específico para eventos del atleta
+      this.http.get<any[]>(`http://localhost:8080/api/atletas/eventos/${session.id}`).subscribe(
+        (response) => {
+          this.procesarEventos(response);
+        },
+        (error) => {
+          console.error('Error al cargar eventos del atleta:', error);
+        }
+      );
     } else {
-      // Si no es entrenador, cargar todos los eventos (para administradores)
+      // Cargar todos los eventos (para administradores)
       this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe(
         (response) => {
           this.procesarEventos(response);
@@ -73,7 +83,7 @@ export class EventTableComponent implements OnInit {
         }
       );
     }
-  }
+  }  
   
   // Método para procesar eventos
   procesarEventos(eventos: any[]) {
@@ -110,9 +120,7 @@ export class EventTableComponent implements OnInit {
   
     this.filteredEventos = [...this.eventos]; // Actualiza la lista filtrada
     console.log('Eventos cargados:', this.eventos);
-  }
-  
-    
+  }  
   /*** Función para determinar el estado actual del evento.*/
   obtenerEstadoActual(
     estado: string,
@@ -159,7 +167,6 @@ export class EventTableComponent implements OnInit {
     return 'PENDIENTE';
   }
    
-  
   cargarTiposDeEventos() {
     this.http.get<any[]>('http://localhost:8080/api/tipoeventos').subscribe(
       (response) => {
