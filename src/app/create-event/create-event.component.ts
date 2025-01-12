@@ -75,7 +75,7 @@ export class CreateEventComponent {
       modalidad: ['', Validators.required],
       categoria: [''],
       cantidadParticipantes: [1, [Validators.required, Validators.min(1)]],
-      metricas: ['', Validators.required],
+      metricas: [''],
     });
 
     this.sessionActive = this.session.getSession();
@@ -148,7 +148,8 @@ export class CreateEventComponent {
       horaInicio: ['', Validators.required],
       horaFin: ['', Validators.required],
       zonaDeportiva: ['', Validators.required],
-      nombre: ['', Validators.required] // Asegúrate de incluir este campo si está en el template
+      nombre: ['', Validators.required],
+      unidades:['', Validators.required],
     });
   
     this.horarios.push(horarioGroup);
@@ -411,12 +412,12 @@ export class CreateEventComponent {
     if (this.eventForm.valid) {
       const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T00:00:00`;
       const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T23:59:59`;
-
+  
       const numIntegrantes =
-      this.modalidadSeleccionada === 'EQUIPO'
-        ? this.eventForm.value.numeroIntegrantes
-        : 1;
-
+        this.modalidadSeleccionada === 'EQUIPO'
+          ? this.eventForm.value.numeroIntegrantes
+          : 1;
+  
       const evento = {
         idEvento: this.eventForm.value.id,
         nombre: this.eventForm.value.nombre,
@@ -427,7 +428,6 @@ export class CreateEventComponent {
         modalidades: this.modalidadSeleccionada,
         categoria: this.categoriaSeleccionada,
         costo: parseFloat(this.eventForm.value.costo).toFixed(2),
-        horario: " ",
         detalles: this.eventForm.value.detalles,
         tipoEvento: { idTipoEvento: Number(this.eventForm.value.tipoSeleccionado) },
         entrenador: { idAdministrador: Number(this.eventForm.value.entrenadorAsignado) },
@@ -438,16 +438,39 @@ export class CreateEventComponent {
   
       console.log('Evento enviado:', JSON.stringify(evento, null, 2));
   
-      const method = evento.idEvento ? 'put' : 'post';
-      const url = evento.idEvento ? `${this.apiUrl}/${evento.idEvento}` : this.apiUrl;
+      // Crear evento y luego asociar las actividades
+      this.http.post(`${this.apiUrl}`, evento).subscribe({
+        next: (response: any) => {
+          const idEvento = response.idEvento; // Obtener el ID del evento recién creado
+          console.log('Evento creado con ID:', idEvento);
   
-      this.http[method](url, evento).subscribe({
-        next: () => {
-          alert(evento.idEvento ? 'Evento actualizado con éxito' : 'Evento creado con éxito');
-          this.router.navigate(['/admin-dashboard']);
+          // Crear las actividades asociadas al evento
+          const actividades = this.horarios.value.map((horario: any) => ({
+            nombre: horario.nombre,
+            instalacion: { id: horario.zonaDeportiva }, // Usar ID de la instalación
+            dia: `${horario.dia}T00:00:00`, // Formato ISO
+            horaInicio: `${horario.horaInicio}:00`, // Formato con segundos
+            horaFin: `${horario.horaFin}:00`,
+            unidades: horario.unidades, // Agregar un valor válido
+            evento: { idEvento }, // Asociar al ID del evento
+          }));
+  
+          console.log('Actividades enviadas:', JSON.stringify(actividades, null, 2));
+  
+          // Hacer POST de las actividades
+          this.http.post('http://localhost:8080/api/actividades', actividades).subscribe({
+            next: () => {
+              alert('Evento y actividades creados con éxito');
+              this.router.navigate(['/admin-dashboard']);
+            },
+            error: (err) => {
+              console.error('Error al crear actividades:', err);
+              alert('Error al guardar actividades. Verifica los datos.');
+            },
+          });
         },
         error: (err) => {
-          console.error('Error al guardar el evento:', err);
+          console.error('Error al crear evento:', err);
           alert('Error al guardar el evento. Verifica los datos.');
         },
       });

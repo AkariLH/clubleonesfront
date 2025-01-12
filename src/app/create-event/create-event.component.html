@@ -98,7 +98,16 @@
         <input formControlName="horaFin" type="time" />
         <label>Zona Deportiva:</label>
         <select formControlName="zonaDeportiva" id="zonaDeportiva" required>
-          <option *ngFor="let area of areasDeportivas" [value]="area.nombre">{{ area.nombre }}</option>
+          <option *ngFor="let area of areasDeportivas" [value]="area.id">{{ area.nombre }}</option>
+        </select>
+        <label>Unidades:</label>
+        <select formControlName="unidades" required>
+          <option value="" disabled selected>Selecciona una unidad</option>
+          <option value="m">Metros (m)</option>
+          <option value="s">Segundos (s)</option>
+          <option value="km">Kilómetros (km)</option>
+          <option value="kmh">Kilómetros por hora (km/h)</option>
+          <option value="puntos">Puntos</option>
         </select>
         <button (click)="eliminarHorario(i)" type="button">Eliminar</button>
       </div>
