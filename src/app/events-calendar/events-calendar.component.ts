@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./events-calendar.component.css'],
 })
 export class EventsCalendarComponent {
-  @Input() events: { [key: string]: string[] } = {}; // Recibir eventos desde el padre
+  @Input() events: { [key: string]: { estado: string }[] } = {}; // Recibir eventos desde el padre
   @Output() dateSelected = new EventEmitter<Date>();
 
   months = [
@@ -67,12 +67,13 @@ export class EventsCalendarComponent {
     this.dateSelected.emit(date);
   }
 
-  hasEvent(date: Date | null): boolean {
+    hasEvent(date: Date | null): boolean {
     if (!date) return false;
-
+  
     const key = `${date.getFullYear()}-${(date.getMonth() + 1)
       .toString()
       .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-    return key in this.events;
+  
+    return this.events[key]?.some(event => event.estado !== 'CANCELADO');
   }
 }

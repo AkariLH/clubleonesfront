@@ -27,11 +27,13 @@ export class EventsComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {
+    ngOnInit() {
     this.http.get<any[]>('http://localhost:8080/api/eventos').subscribe((eventos) => {
       this.eventosAgrupados = {};
   
       eventos.forEach((evento) => {
+        if (evento.estado === 'CANCELADO') return; // Filtra eventos cancelados
+  
         const fechaInicio = new Date(evento.fechaInicioEvento);
         const fechaFin = new Date(evento.fechaFinEvento);
   
@@ -86,19 +88,21 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  onDateSelected(fecha: Date) {
+    onDateSelected(fecha: Date) {
     const fechaClave = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
     const eventosDelDia = this.eventosAgrupados[fechaClave] || [];
   
-    this.eventosSeleccionados = eventosDelDia.map((evento) => ({
-      id: evento.idEvento, 
-      nombre: evento.nombre,
-      fechaInicioEvento: evento.fechaInicioEvento,
-      fechaFinEvento: evento.fechaFinEvento,
-      categoria: evento.categoria || 'No especificada',
-      modalidades: evento.modalidad || 'No especificada',
-      detalles: evento.detalles || 'Sin detalles',
-      estado: evento.estado,
-    }));
-  }  
+    this.eventosSeleccionados = eventosDelDia
+      .filter(evento => evento.estado !== 'CANCELADO')
+      .map((evento) => ({
+        id: evento.idEvento, 
+        nombre: evento.nombre,
+        fechaInicioEvento: evento.fechaInicioEvento,
+        fechaFinEvento: evento.fechaFinEvento,
+        categoria: evento.categoria || 'No especificada',
+        modalidades: evento.modalidad || 'No especificada',
+        detalles: evento.detalles || 'Sin detalles',
+        estado: evento.estado,
+      }));
+  }
 }
