@@ -26,6 +26,8 @@ export class EventDetailsComponent implements OnInit {
   isProcessing: boolean = false;
   tipoUsuario: string | null = null;
   selectedEvent: any = null;
+  atletas: any[] = [];
+  showAtletasModal: boolean = false;
 
   constructor(private http: HttpClient, private sessionService: SessionService, private router: Router) {}
 
@@ -34,7 +36,7 @@ export class EventDetailsComponent implements OnInit {
     this.tipoUsuario = session?.tipoUsuario || null;
   }
 
-    verMas(event: any): void {
+  verMas(event: any): void {
     // Llamada al backend para obtener información detallada del evento si es necesario
     this.http.get(`http://localhost:8080/api/eventos/${event.id}`).subscribe({
       next: (response: any) => {
@@ -61,6 +63,7 @@ export class EventDetailsComponent implements OnInit {
 
   cerrarModal(): void {
     this.selectedEvent = null; // Cierra el modal
+    this.showAtletasModal = false; // Cierra el modal de atletas
   }
 
   inscribirse(event: any): void {
@@ -96,4 +99,52 @@ export class EventDetailsComponent implements OnInit {
         },
       });
   }
+
+  inscribirAtleta(event: any): void {
+    this.showAtletasModal = true;
+    this.selectedEvent = event;
+    this.http.get('http://localhost:8080/api/atletas').subscribe({
+      next: (response: any) => {
+        this.atletas = response.map((atleta: any) => ({
+          id: atleta.idAtleta, // Ajusta el nombre del campo si es diferente
+          nombreCompleto: `${atleta.nombre} ${atleta.apellidoPaterno} ${atleta.apellidoMaterno}`,
+          correo: atleta.correo,
+        }));        
+        console.log('Lista de atletas:', this.atletas); // Verificar la lista de atletas
+      },
+      error: (err) => {
+        console.error('Error al cargar la lista de atletas:', err);
+        alert('Hubo un error al cargar la lista de atletas.');
+      },
+    });
+  }
+
+  seleccionarAtleta(atleta: any): void {
+    const eventoId = this.selectedEvent.id;
+    const atletaId = atleta.id; // Asegúrate de que este campo exista y tenga el valor correcto
+  
+    if (!atletaId) {
+      console.error('El ID del atleta es undefined');
+      alert('Hubo un error al seleccionar el atleta. Por favor, inténtalo de nuevo.');
+      return;
+    }
+  
+    this.http
+      .post(`http://localhost:8080/api/atletas/${atletaId}/eventos/${eventoId}`, {})
+      .subscribe({
+        next: () => {
+          alert(`El atleta ${atleta.nombreCompleto} ha sido inscrito exitosamente al evento: ${this.selectedEvent.nombre}`);
+          this.cerrarModal();
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 409) {
+            console.error('Error al inscribir al atleta en el evento: El atleta ya está registrado en este evento');
+            alert('El atleta ya está inscrito en este evento.');
+          } else {
+            console.error('Error al inscribir al atleta en el evento:', err);
+            alert('Hubo un error al intentar inscribir al atleta. Por favor, inténtalo de nuevo.');
+          }
+        },
+      });
+  }  
 }

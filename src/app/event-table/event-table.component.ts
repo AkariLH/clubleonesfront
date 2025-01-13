@@ -27,7 +27,7 @@ export class EventTableComponent implements OnInit {
   selectedType: string = '';
   selectedDate: string = '';
   dropdownVisible: boolean = false;
-  faFilter = faFilter; 
+  faFilter = faFilter;
   eventTypes: string[] = []; // Tipos de eventos disponibles
 
   constructor(private router: Router, private http: HttpClient, private sessionService: SessionService) {}
@@ -265,7 +265,7 @@ export class EventTableComponent implements OnInit {
         this.dropdownVisible = false;
       }
     }
-  
+    
     cancelarInscripcion(evento: any) {
       const confirmacion = confirm(`¿Estás seguro de que deseas cancelar tu inscripción al evento "${evento.nombre}"?`);
       if (confirmacion) {

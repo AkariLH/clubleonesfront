@@ -18,7 +18,7 @@
     </p>
     <div class="button-group">
       <button class="view-more-btn" (click)="verMas(event)">Ver Más</button>
-      <button *ngIf="event.estado === 'INSCRIPCIONES'" class="register-btn" (click)="inscribirse(event)">
+      <button *ngIf="event.estado === 'INSCRIPCIONES'" class="register-btn" (click)="tipoUsuario === 'ADMIN' ? inscribirAtleta(event) : inscribirse(event)">
         {{ tipoUsuario === 'ADMIN' ? 'Inscribir Atleta' : 'Inscribirse' }}
       </button>
     </div>
@@ -77,3 +77,19 @@
   </div>
 </div>
 
+<!-- Modal para seleccionar atleta -->
+<div *ngIf="showAtletasModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" (click)="cerrarModal()">×</button>
+    <h3>Seleccionar Atleta</h3>
+    <ul class="athlete-list">
+      <li
+        *ngFor="let atleta of atletas"
+        (click)="seleccionarAtleta(atleta)"
+        class="athlete-item"
+      >
+        {{ atleta.nombreCompleto }} ({{ atleta.correo }})
+      </li>
+    </ul>
+  </div>
+</div>
