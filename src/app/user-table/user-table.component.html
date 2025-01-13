@@ -38,8 +38,8 @@
           <p><strong>Correo:</strong> {{ usuario.correo }}</p>
         </div>       
         <div class="card-actions">
-          <button class="btn-secondary">Editar</button>
-          <button class="btn-danger">Eliminar</button>
+          <button class="btn-secondary" (click)="editarUsuario(usuario)">Editar</button>
+          <button class="btn-danger" (click)="eliminarUsuario(usuario)">Eliminar</button>
         </div>
       </div>
     </div>

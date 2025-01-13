@@ -17,4 +17,12 @@ export class AdministracionService {
   createAdministrador(administrador: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, administrador);
   }
+
+  getAdministradorById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  updateAdministrador(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
 }

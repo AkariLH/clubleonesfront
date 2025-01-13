@@ -20,6 +20,8 @@ export const routes: Routes = [
   { path: 'eventos', component: EventsComponent }, // Página de eventos
   { path: 'instalaciones', component: InstallationsComponent }, 
   { path: 'atleta-dashboard', component: AthleteDashboardComponent},
+  { path: 'registro-admin/:id', component: AdministrationRegistrationComponent },
+  { path: 'registro-atletas/:id', component: AthleteRegistrationComponent },
   { path: 'registro-atletas', component: AthleteRegistrationComponent },
   { path: 'crear-evento', component: CreateEventComponent  },
   { path: 'agregar-tipo-evento', component: AddEventTypeComponent },
@@ -29,6 +31,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'coach-dashboard', component: CoachDashboardComponent },
   { path: '**', component: NotFoundComponent},
-  
 ];
 

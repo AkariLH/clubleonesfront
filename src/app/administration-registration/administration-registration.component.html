@@ -12,7 +12,7 @@
     <!-- Correo --> 
     <div>
       <label>Correo Electrónico:</label>
-      <input formControlName="email" type="email" />
+      <input formControlName="correo" type="email" />
       <div *ngIf="userForm.get('email')?.hasError('email') && userForm.get('email')?.touched" class="error-text">
         Ingresa un correo válido.
       </div>

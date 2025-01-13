@@ -20,4 +20,5 @@ export class AtletaService {
     const url = `${this.apiUrl}/${atletaId}/eventos/${eventoId}`;
     return this.http.post<any>(url, {});
   }
+
 }

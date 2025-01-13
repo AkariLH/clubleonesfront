@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AdministracionService } from '../services/administracion.service';
 import { SessionService } from '../services/session.service';
 import { Session } from '../classes/Session';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-administration-registration',
@@ -15,56 +15,89 @@ import { Router } from '@angular/router';
 })
 export class AdministrationRegistrationComponent {
   userForm: FormGroup;
+  isEditMode = false;
   roles = [
     { id: 1, name: 'ADMIN' },
     { id: 2, name: 'ENTRENADOR' },
   ];
   private sessionActive: Session;
+  private adminId: number | null = null;
 
-  constructor(private fb: FormBuilder, private administracionService: AdministracionService,private session: SessionService, private router: Router) {
+  constructor(private fb: FormBuilder, private administracionService: AdministracionService,private session: SessionService, private router: Router, private route: ActivatedRoute) {
     this.userForm = this.fb.group({
       nombre: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
       rol: [null, Validators.required],
     });
     this.sessionActive = this.session.getSession();
-    if(this.sessionActive.tipoUsuario == 'ADMIN'){
+    if(this.sessionActive.tipoUsuario !== 'ADMIN'){
       console.log('administrador');
-    }else if(this.session.sessionActive.tipoUsuario == 'ENTRENADOR'){
       this.router.navigate(['/**']);
-      console.log('entrenador');
-    }else{
-      this.router.navigate(['/**']);
-      console.log('atleta');
     }
   }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.isEditMode = true;
+        this.adminId = +id;
+        this.loadAdministrador(+id);
+      }
+    });
+  }
+  
+  loadAdministrador(id: number): void {
+    this.administracionService.getAdministradorById(id).subscribe((administrador) => {
+      console.log('Datos recibidos del backend:', administrador); // Verificar contenido
+      this.userForm.patchValue({
+        nombre: administrador.nombre,
+        correo: administrador.correo, // Asegúrate de que coincida con la estructura del backend
+        rol: administrador.rol,
+      });
+    });
+  }
+  
 
   onSubmit() {
     if (this.userForm.valid) {
       const usuario = {
         nombre: this.userForm.value.nombre,
-        correo: this.userForm.value.email,
-        contrasena: this.userForm.value.contrasena,
-        rol: this.userForm.value.rol, 
+        correo: this.userForm.value.correo,
+        contrasena: this.userForm.value.contrasena || null, // No enviar contraseña en edición
+        rol: this.userForm.value.rol,
       };
-  
-      console.log('Datos del usuario a enviar:', usuario);
-  
-      this.administracionService.createAdministrador(usuario).subscribe({
-        next: (response) => {
-          console.log('Administrador registrado:', response);
-          alert('Administrador registrado con éxito');
-          this.userForm.reset();
-          this.router.navigate(['/admin-dashboard']);
-        },
-        error: (err) => {
-          console.error('Error al registrar administrador:', err);
-          alert('Ocurrió un error al registrar el administrador.');
-        },
-      });
+      console.log('Datos a enviar al backend:', usuario); // Verificar contenido
+
+      if (this.isEditMode && this.adminId) {
+        // Modo edición: PUT
+        this.administracionService.updateAdministrador(this.adminId, usuario).subscribe({
+          next: (response) => {
+            alert('Administrador actualizado con éxito');
+            this.router.navigate(['/admin-dashboard']);
+          },
+          error: (err) => {
+            console.error('Error al actualizar administrador:', err);
+            alert('Ocurrió un error al actualizar el administrador.');
+          },
+        });
+      } else {
+        // Modo registro: POST
+        this.administracionService.createAdministrador(usuario).subscribe({
+          next: (response) => {
+            alert('Administrador registrado con éxito');
+            this.userForm.reset();
+            this.router.navigate(['/admin-dashboard']);
+          },
+          error: (err) => {
+            console.error('Error al registrar administrador:', err);
+            alert('Ocurrió un error al registrar el administrador.');
+          },
+        });
+      }
     } else {
-      console.log('Formulario inválido');
+      alert('Por favor, completa todos los campos correctamente.');
       this.userForm.markAllAsTouched();
     }
   }  

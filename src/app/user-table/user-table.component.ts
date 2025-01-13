@@ -5,6 +5,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { HttpClient } from '@angular/common/http';
 import { HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 interface Usuario {
@@ -31,7 +32,7 @@ export class UserTableComponent implements OnInit {
   private atletasApiUrl = 'http://localhost:8080/api/atletas'; // URL para atletas
   private administradoresApiUrl = 'http://localhost:8080/api/administradores'; // URL para administradores
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.cargarUsuarios();
@@ -109,4 +110,32 @@ export class UserTableComponent implements OnInit {
       this.dropdownVisible = false;
     }
   }
+
+    editarUsuario(usuario: Usuario): void {
+      if (usuario.rol === 'Atleta') {
+        this.router.navigate(['/registro-atletas', usuario.id]);
+      } else if (usuario.rol === 'ADMIN' || usuario.rol === 'ENTRENADOR') {
+        this.router.navigate(['/registro-admin', usuario.id]);
+      }
+    }
+  
+    eliminarUsuario(usuario: Usuario): void {
+      const confirmacion = confirm(`¿Estás seguro de que deseas eliminar a ${usuario.nombre}?`);
+      if (confirmacion) {
+        const apiUrl = usuario.rol === 'Atleta' 
+          ? `http://localhost:8080/api/atletas/${usuario.id}`
+          : `http://localhost:8080/api/administradores/${usuario.id}`;
+  
+        this.http.delete(apiUrl).subscribe({
+          next: () => {
+            alert(`${usuario.nombre} ha sido eliminado correctamente.`);
+            this.cargarUsuarios();
+          },
+          error: (err) => {
+            console.error('Error al eliminar usuario:', err);
+            alert('Ocurrió un error al eliminar el usuario.');
+          },
+        });
+      }
+    }
 }
