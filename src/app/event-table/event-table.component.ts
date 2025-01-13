@@ -27,8 +27,8 @@ export class EventTableComponent implements OnInit {
   selectedType: string = '';
   selectedDate: string = '';
   dropdownVisible: boolean = false;
-  faFilter = faFilter;
-  eventTypes: string[] = []; // Obtendremos los tipos de eventos desde el backend
+  faFilter = faFilter; 
+  eventTypes: string[] = []; // Tipos de eventos disponibles
 
   constructor(private router: Router, private http: HttpClient, private sessionService: SessionService) {}
 
@@ -170,7 +170,7 @@ export class EventTableComponent implements OnInit {
   cargarTiposDeEventos() {
     this.http.get<any[]>('http://localhost:8080/api/tipoeventos').subscribe(
       (response) => {
-        this.eventTypes = response.map((tipo) => tipo.nombre); // Suponiendo que el backend devuelve una propiedad `nombre`
+        this.eventTypes = response.map((tipo) => tipo.nombre); 
         console.log('Tipos de eventos cargados:', this.eventTypes);
       },
       (error) => {
@@ -266,4 +266,20 @@ export class EventTableComponent implements OnInit {
       }
     }
   
+    cancelarInscripcion(evento: any) {
+      const confirmacion = confirm(`¿Estás seguro de que deseas cancelar tu inscripción al evento "${evento.nombre}"?`);
+      if (confirmacion) {
+        const session = this.sessionService.getSession();
+        this.http.delete(`http://localhost:8080/api/atletas/${session.id}/eventos/${evento.id}`).subscribe(
+          () => {
+            this.eventos = this.eventos.filter(e => e.id !== evento.id); // Eliminar el evento de la lista localmente
+            this.filteredEventos = this.filteredEventos.filter(e => e.id !== evento.id);
+            console.log(`Inscripción al evento "${evento.nombre}" cancelada con éxito.`);
+          },
+          (error) => {
+            console.error('Error al cancelar la inscripción:', error);
+          }
+        );
+      }
+    }
 }
