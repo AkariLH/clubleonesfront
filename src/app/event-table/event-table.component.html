@@ -33,7 +33,7 @@
         <input type="date" [(ngModel)]="selectedDate" id="date-filter" class="filter-dropdown-select" />
 
         <div class="filter-actions">
-      <!--<button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>-->
+          <!--<button class="btn-apply" (click)="aplicarFiltros()">Aplicar</button>-->
           <button class="btn-reset" (click)="clearFilters()">Limpiar Filtros</button>
         </div>
       </div>
@@ -43,7 +43,7 @@
   <!-- Contenido scrollable con las tarjetas -->
   <div class="scrollable-content">
     <div class="cards">
-      <div class="card" *ngFor="let evento of displayedEventos">
+      <div class="card" *ngFor="let evento of displayedEventos" (click)="seleccionarEvento(evento)">
         <div class="card-header">
           <h3>{{ evento.nombre }}</h3>
           <span 

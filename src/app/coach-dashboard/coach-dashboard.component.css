@@ -36,7 +36,7 @@
   font-size: 1.8rem;
   margin-bottom: 20px;
   color: #444;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid #ffd700;
   padding-bottom: 10px;
 }
 
@@ -105,3 +105,70 @@
   background-color: #e63939;
 }
 
+/* Tabla de Atletas Inscritos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden; /* Mantiene las esquinas redondeadas */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #f3f3f3; /* Fondo claro para encabezados */
+  color: #555; /* Texto en gris oscuro */
+  text-align: left;
+}
+
+thead th {
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Fondo alternado */
+}
+
+tbody tr:hover {
+  background-color: #f4f4f4; /* Resalte al pasar el mouse */
+}
+
+tbody td {
+  padding: 10px;
+  color: #555;
+  border: 1px solid #e0e0e0;
+}
+
+tbody td input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.no-activities {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+/* Botón de acciones */
+.btn-secondary {
+  background-color: #ffd700;
+  color: #222;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e6b800;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
