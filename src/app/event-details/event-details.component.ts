@@ -68,28 +68,42 @@ export class EventDetailsComponent implements OnInit {
 
   inscribirse(event: any): void {
     const session = this.sessionService.getSession();
-    if (!session.tipoUsuario) {
-      alert('Debes iniciar sesión para inscribirte a un evento.');
-      this.router.navigate(['/login']); // Redirige a la página de inicio de sesión
-      return;
-    }
+    const atletaId = session.id;
 
-    if (session.tipoUsuario !== 'Atleta') {
-      alert('Debes iniciar sesión como atleta para inscribirte a un evento.');
-      return;
-    }
+    // Obtener los datos del atleta desde el backend
+    this.http.get(`http://localhost:8080/api/atletas/${atletaId}`).subscribe({
+      next: (response: any) => {
+        const atleta = {
+          fechaDeNacimiento: response.fechaDeNacimiento,
+          sexo: response.sexo,
+          id: atletaId
+        };
+        console.log('Datos del atleta obtenidos de la API:', response);
 
-    const atletaId = session.id; 
-    const eventoId = event.id; 
+        // Verificar restricciones después de obtener los datos
+        if (!this.checkRestrictions(event, atleta)) {
+          alert(`No cumples con los requisitos de la categoría ${event.categoria}.`);
+          return;
+        }
 
+        this.inscribirAtletaEnEvento(atletaId, event);
+      },
+      error: (err) => {
+        console.error('Error al obtener los datos del atleta:', err);
+        alert('Hubo un error al obtener los datos del atleta. Por favor, inténtalo de nuevo.');
+      },
+    });
+  }
+
+  inscribirAtletaEnEvento(atletaId: number, event: any): void {
     this.http
-      .post(`http://localhost:8080/api/atletas/${atletaId}/eventos/${eventoId}`, {})
+      .post(`http://localhost:8080/api/atletas/${atletaId}/eventos/${event.id}`, {})
       .subscribe({
         next: () => {
           alert(`Te has inscrito exitosamente al evento: ${event.nombre}`);
         },
         error: (err: HttpErrorResponse) => {
-          if(err.status === 409) {
+          if (err.status === 409) {
             console.error('Error al inscribirse al evento: El atleta ya está registrado en este evento');
             alert('Ya estás inscrito en este evento.');
           } else {
@@ -109,6 +123,8 @@ export class EventDetailsComponent implements OnInit {
           id: atleta.idAtleta, // Ajusta el nombre del campo si es diferente
           nombreCompleto: `${atleta.nombre} ${atleta.apellidoPaterno} ${atleta.apellidoMaterno}`,
           correo: atleta.correo,
+          fechaDeNacimiento: atleta.fechaDeNacimiento, // Asegúrate de que este campo existe en la respuesta
+          sexo: atleta.sexo // Asegúrate de que este campo existe en la respuesta
         }));        
         console.log('Lista de atletas:', this.atletas); // Verificar la lista de atletas
       },
@@ -120,14 +136,18 @@ export class EventDetailsComponent implements OnInit {
   }
 
   seleccionarAtleta(atleta: any): void {
-    const eventoId = this.selectedEvent.id;
-    const atletaId = atleta.id; // Asegúrate de que este campo exista y tenga el valor correcto
-  
-    if (!atletaId) {
-      console.error('El ID del atleta es undefined');
-      alert('Hubo un error al seleccionar el atleta. Por favor, inténtalo de nuevo.');
+    if (!atleta) {
+      alert('El atleta seleccionado no es válido.');
       return;
     }
+  
+    if (!this.checkRestrictions(this.selectedEvent, atleta)) {
+      alert(`El atleta ${atleta.nombreCompleto} no cumple con los requisitos de la categoría ${this.selectedEvent?.categoria || 'desconocida'}.`);
+      return;
+    }
+  
+    const eventoId = this.selectedEvent.id;
+    const atletaId = atleta.id;
   
     this.http
       .post(`http://localhost:8080/api/atletas/${atletaId}/eventos/${eventoId}`, {})
@@ -147,4 +167,45 @@ export class EventDetailsComponent implements OnInit {
         },
       });
   }  
+
+  calculateAge(birthDate: string): number {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  checkRestrictions(event: any, atleta: any): boolean {
+    if (!event || !atleta) {
+      console.error('Datos del evento o atleta faltantes.');
+      return false;
+    }
+  
+    const categoria = event.categoria ? event.categoria.toUpperCase() : '';
+    const edad = atleta.fechaDeNacimiento ? this.calculateAge(atleta.fechaDeNacimiento) : null;
+    const genero = atleta.sexo ? atleta.sexo.toUpperCase() : '';
+    console.log('Categoría:', categoria, 'Edad:', edad, 'Género:', genero); // Depuración
+    if (!categoria || edad === null || !genero) {
+      console.error('Datos faltantes: categoría, edad o género.');
+      return false;
+    }
+  
+    switch (categoria) {
+      case 'FEMENIL':
+        return genero === 'FEMENINO' && edad >= 15;
+      case 'VARONIL':
+        return genero === 'MASCULINO' && edad >= 15;
+      case 'INFANTIL':
+        return edad >= 6 && edad <= 14;
+      case 'MIXTO':
+        return edad >= 15; // Acepta tanto masculino como femenino de 15 años en adelante
+      default:
+        console.error('Categoría desconocida:', categoria);
+        return false;
+    }
+  }
 }
