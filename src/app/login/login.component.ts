@@ -57,6 +57,7 @@ export class LoginComponent {
             this.router.navigate(['/coach-dashboard']);
             console.log('entrenador');
           }else{
+            this.router.navigate(['/atleta-dashboard']);
             // redireccion
             console.log('atleta');
           }

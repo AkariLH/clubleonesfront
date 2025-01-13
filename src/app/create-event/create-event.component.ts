@@ -101,14 +101,14 @@ export class CreateEventComponent {
     this.obtenerTiposEventos();
     this.obtenerEntrenadores();
     this.obtenerAreasDeportivas();
-  }  
+  } 
   
   loadEvent(id: string) {
     this.http.get(`${this.apiUrl}/${id}`).subscribe({
       next: (evento: any) => {
         console.log('Evento cargado para edición:', evento); // Depuración
         const formatDate = (dateString: string) => new Date(dateString).toISOString().split('T')[0];
-  
+
         // Actualiza el formulario
         this.eventForm.patchValue({
           id: evento.idEvento,
@@ -126,10 +126,13 @@ export class CreateEventComponent {
           cancelado: evento.estado === 'CANCELADO',
           numeroIntegrantes: evento.numeroIntegrantes || 1,
         });
-  
+
         // Actualiza las variables auxiliares
         this.modalidadSeleccionada = evento.modalidades || '';
         this.categoriaSeleccionada = evento.categoria || '';
+
+        // Cargar actividades del evento
+        this.loadActividades(evento.idEvento);
       },
       error: (err) => {
         console.error('Error al cargar el evento:', err);
@@ -137,6 +140,27 @@ export class CreateEventComponent {
     });
   }
   
+  loadActividades(eventoId: number) {
+    this.http.get<any[]>(`http://localhost:8080/api/eventos/actividades/${eventoId}`).subscribe({
+      next: (actividades: any[]) => {
+        const actividadesFormArray = this.eventForm.get('horarios') as FormArray;
+        actividades.forEach((actividad) => {
+          const dia = actividad.dia ? new Date(actividad.dia).toISOString().split('T')[0] : '';
+          actividadesFormArray.push(this.fb.group({
+            nombre: [actividad.nombre, Validators.required],
+            zonaDeportiva: [actividad.instalacion.id, Validators.required],
+            dia: [dia, Validators.required],
+            horaInicio: [actividad.horaInicio, Validators.required],
+            horaFin: [actividad.horaFin, Validators.required],
+            unidades: [actividad.unidades, Validators.required],
+          }));
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar actividades del evento:', err);
+      },
+    });
+  }
 
   get horarios(): FormArray {
     return this.eventForm.get('horarios') as FormArray;

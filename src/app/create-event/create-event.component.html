@@ -1,5 +1,5 @@
 <div class="form-container">
-  <h2>Crear Evento Deportivo</h2>
+  <h2>{{isEditMode ? 'EDITAR EVENTOS': 'CREAR EVENTO'}}</h2>
   <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
     <!-- Nombre del evento -->
     <div>
