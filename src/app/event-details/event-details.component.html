@@ -28,3 +28,52 @@
 <ng-template #noEvents>
   <p>No hay eventos seleccionados.</p>
 </ng-template>
+
+<!-- Modal -->
+<div *ngIf="selectedEvent" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" (click)="cerrarModal()">×</button>
+
+    <div class="header-section">
+      <h2 class="event-title">{{ selectedEvent.nombre }}</h2>
+      <p class="event-dates">
+        <strong>Del:</strong> {{ selectedEvent.fechaInicioEvento | date: 'fullDate' }}
+        <strong>al:</strong> {{ selectedEvent.fechaFinEvento | date: 'fullDate' }}
+      </p>
+    </div>
+
+    <div class="details-section">
+      <h3>Detalles del Evento</h3>
+      <p><strong>Modalidad:</strong> {{ selectedEvent.modalidades }}</p>
+      <p><strong>Categoría:</strong> {{ selectedEvent.categoria }}</p>
+      <p><strong>Descripción:</strong> {{ selectedEvent.detalles }}</p>
+    </div>
+
+    <div class="activities-section" *ngIf="selectedEvent.actividades?.length > 0">
+      <h3>Actividades Programadas</h3>
+      <table class="activities-table">
+        <thead>
+          <tr>
+            <th>Actividad</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Ubicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let actividad of selectedEvent.actividades">
+            <td>{{ actividad.nombre }}</td>
+            <td>{{ actividad.dia | date: 'fullDate' }}</td>
+            <td>{{ actividad.horaInicio }} - {{ actividad.horaFin }}</td>
+            <td>{{ actividad.instalacion.nombre }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="selectedEvent.actividades?.length === 0">
+      <p class="no-activities">No hay actividades programadas para este evento.</p>
+    </div>
+  </div>
+</div>
+

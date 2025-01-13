@@ -25,16 +25,42 @@ export class EventDetailsComponent implements OnInit {
 
   isProcessing: boolean = false;
   tipoUsuario: string | null = null;
+  selectedEvent: any = null;
 
   constructor(private http: HttpClient, private sessionService: SessionService, private router: Router) {}
 
   ngOnInit() {
     const session = this.sessionService.getSession();
-    this.tipoUsuario = session.tipoUsuario || null;
+    this.tipoUsuario = session?.tipoUsuario || null;
   }
 
-  verMas(event: any): void {
-    alert(`Ver más detalles del evento: ${event.nombre}`);
+    verMas(event: any): void {
+    // Llamada al backend para obtener información detallada del evento si es necesario
+    this.http.get(`http://localhost:8080/api/eventos/${event.id}`).subscribe({
+      next: (response: any) => {
+        this.selectedEvent = response; // Actualiza el evento seleccionado
+  
+        // Llamada adicional para obtener las actividades del evento
+        this.http.get(`http://localhost:8080/api/eventos/actividades/${event.id}`).subscribe({
+          next: (actividades: any) => {
+            this.selectedEvent.actividades = actividades; // Asigna las actividades al evento seleccionado
+            console.log('Actividades del evento:', this.selectedEvent.actividades); // Depuración
+          },
+          error: (err) => {
+            console.error('Error al cargar actividades del evento:', err);
+            alert('Hubo un error al cargar las actividades del evento.');
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Error al cargar detalles del evento:', err);
+        alert('Hubo un error al cargar los detalles del evento.');
+      },
+    });
+  }
+
+  cerrarModal(): void {
+    this.selectedEvent = null; // Cierra el modal
   }
 
   inscribirse(event: any): void {
