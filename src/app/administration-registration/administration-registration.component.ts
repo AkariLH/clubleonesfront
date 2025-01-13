@@ -32,7 +32,7 @@ export class AdministrationRegistrationComponent {
     });
     this.sessionActive = this.session.getSession();
     if(this.sessionActive.tipoUsuario !== 'ADMIN'){
-      console.log('administrador');
+      console.log('Administrador');
       this.router.navigate(['/**']);
     }
   }
@@ -50,10 +50,10 @@ export class AdministrationRegistrationComponent {
   
   loadAdministrador(id: number): void {
     this.administracionService.getAdministradorById(id).subscribe((administrador) => {
-      console.log('Datos recibidos del backend:', administrador); // Verificar contenido
+      console.log('Datos recibidos del backend:', administrador); 
       this.userForm.patchValue({
         nombre: administrador.nombre,
-        correo: administrador.correo, // Asegúrate de que coincida con la estructura del backend
+        correo: administrador.correo, 
         rol: administrador.rol,
       });
     });
@@ -65,10 +65,10 @@ export class AdministrationRegistrationComponent {
       const usuario = {
         nombre: this.userForm.value.nombre,
         correo: this.userForm.value.correo,
-        contrasena: this.userForm.value.contrasena || null, // No enviar contraseña en edición
+        contrasena: this.userForm.value.contrasena || null, 
         rol: this.userForm.value.rol,
       };
-      console.log('Datos a enviar al backend:', usuario); // Verificar contenido
+      //console.log('Datos a enviar al backend:', usuario); //Verificar contenido
 
       if (this.isEditMode && this.adminId) {
         // Modo edición: PUT

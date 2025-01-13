@@ -1,5 +1,5 @@
 <div class="form-container">
-  <h2>Registrar Usuario Administrativo</h2>
+  <h2>{{isEditMode ? 'Edición de Usuario Administrativo' : 'Registrar Usuario Administrativo'}}</h2>
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <!-- Nombre --> 
     <div>
@@ -39,6 +39,6 @@
         Selecciona un rol.
       </div>
     </div>    
-    <button type="submit">Registrar Usuario</button>
+    <button type="submit">{{isEditMode ? 'Editar' : 'Registrar'}}</button>
   </form>
 </div>

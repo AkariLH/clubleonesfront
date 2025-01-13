@@ -95,8 +95,13 @@ export class AthleteDashboardComponent implements OnInit {
   }
 
   editarDatos(): void {
-    alert('Funcionalidad para editar datos personales aún no implementada.');
-  }
+    const session = this.sessionService.getSession();
+    if (session && session.id) {
+      this.router.navigate([`/registro-atletas`, session.id]);
+    } else {
+      console.error('No se encontró una sesión activa o ID del usuario.');
+    }
+  }  
 
   verHistorico(): void {
     alert('Funcionalidad adicional pendiente de implementar.');
