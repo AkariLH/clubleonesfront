@@ -13,4 +13,9 @@ export class InstalacionService {
   getInstalaciones(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl);
   }
+
+  // Obtener actividades por instalación
+  getActividadesByInstalacion(idInstalacion: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/actividades/${idInstalacion}`);
+  }
 }

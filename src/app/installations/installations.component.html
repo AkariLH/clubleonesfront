@@ -1,24 +1,27 @@
 <div class="installations-container">
-    <!-- Mapa de instalaciones -->
-    <div class="map-container">
-      <div
-        *ngFor="let zone of zones"
-        class="zone"
-        [ngStyle]="{
-          backgroundColor: zone.color,
-          left: zone.left,
-          top: zone.top,
-          width: zone.width,
-          height: zone.height
-        }"
-        (click)="onZoneClick(zone)"
-      >
-        {{ zone.name }}
-      </div>
-    </div>
-  
-   
-    <div class="panel-container">
-      <app-selected-zone-panel [selectedZone]="selectedZone"></app-selected-zone-panel>
+  <!-- Mapa de instalaciones -->
+  <div class="map-container">
+    <div
+      *ngFor="let zone of zones"
+      class="zone"
+      [ngStyle]="{
+        backgroundColor: zone.color,
+        left: zone.left,
+        top: zone.top,
+        width: zone.width,
+        height: zone.height
+      }"
+      (click)="onZoneClick(zone)"
+    >
+      {{ zone.name }}
     </div>
   </div>
+
+  <!-- Panel de zona seleccionada -->
+  <div class="panel-container">
+    <app-selected-zone-panel
+      [selectedZone]="selectedZone"
+      [actividades]="actividades"
+    ></app-selected-zone-panel>
+  </div>
+</div>

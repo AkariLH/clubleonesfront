@@ -1,9 +1,18 @@
-<div class="selected-zone-panel" [class.active]="selectedZone">
-    <h3 *ngIf="selectedZone; else noZoneSelected">
-      Zona Seleccionada: {{ selectedZone }}
-    </h3>
-    <ng-template #noZoneSelected>
-      <p>Haz clic en una zona para seleccionarla.</p>
-    </ng-template>
+<div *ngIf="selectedZone" class="selected-zone-panel">
+  <h3>{{ selectedZone.name }}</h3>
+  <p>{{ selectedZone.descripcion }}</p>
+
+  <div *ngIf="actividades.length > 0">
+    <h4>Actividades Programadas (Próximos 7 días):</h4>
+    <div class="cards-container">
+      <div *ngFor="let actividad of actividades" class="card">
+        <p><strong>Día:</strong> {{ actividad.dia }}</p>
+        <p><strong>Actividad:</strong> {{ actividad.nombre }}</p>
+        <p><strong>Horario:</strong> {{ actividad.horaInicio }} - {{ actividad.horaFin }}</p>
+      </div>
+    </div>
   </div>
-  
+  <div *ngIf="actividades.length === 0">
+    <p>No hay actividades programadas en esta zona para los próximos 7 días.</p>
+  </div>
+</div>
