@@ -434,7 +434,7 @@ export class CreateEventComponent {
   
   onSubmit() {
     if (this.eventForm.valid) {
-      const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T00:00:00`;
+      const fechaInicioEvento = `${this.eventForm.value.fechaInicioEvento}T08:00:00`;
       const fechaFinEvento = `${this.eventForm.value.fechaFinEvento}T23:59:59`;
   
       const numIntegrantes =
@@ -462,44 +462,49 @@ export class CreateEventComponent {
   
       console.log('Evento enviado:', JSON.stringify(evento, null, 2));
   
-      // Crear evento y luego asociar las actividades
-      this.http.post(`${this.apiUrl}`, evento).subscribe({
-        next: (response: any) => {
-          const idEvento = response.idEvento; // Obtener el ID del evento recién creado
-          console.log('Evento creado con ID:', idEvento);
-  
-          // Crear las actividades asociadas al evento
-          const actividades = this.horarios.value.map((horario: any) => ({
-            nombre: horario.nombre,
-            instalacion: { id: horario.zonaDeportiva }, // Usar ID de la instalación
-            dia: `${horario.dia}T00:00:00`, // Formato ISO
-            horaInicio: `${horario.horaInicio}:00`, // Formato con segundos
-            horaFin: `${horario.horaFin}:00`,
-            unidades: horario.unidades, // Agregar un valor válido
-            evento: { idEvento }, // Asociar al ID del evento
-          }));
-  
-          console.log('Actividades enviadas:', JSON.stringify(actividades, null, 2));
-  
-          // Hacer POST de las actividades
-          this.http.post('http://localhost:8080/api/actividades', actividades).subscribe({
-            next: () => {
-              alert('Evento y actividades creados con éxito');
-              this.router.navigate(['/admin-dashboard']);
-            },
-            error: (err) => {
-              console.error('Error al crear actividades:', err);
-              alert('Error al guardar actividades. Verifica los datos.');
-            },
-          });
-        },
-        error: (err) => {
-          console.error('Error al crear evento:', err);
-          alert('Error al guardar el evento. Verifica los datos.');
-        },
-      });
-    } else {
-      alert('Por favor, completa todos los campos obligatorios.');
+      if (this.isEditMode) {
+        // Actualizar evento existente
+        this.http.put(`${this.apiUrl}/${evento.idEvento}`, evento).subscribe({
+          next: (response: any) => {
+            console.log('Evento actualizado:', response);
+            this.router.navigate(['/admin-dashboard']);
+            // No hacer nada con las actividades en modo edición
+          },
+          error: (error: any) => {
+            console.error('Error al actualizar el evento:', error);
+          }
+        });
+      } else {
+        // Crear nuevo evento
+        this.http.post(`${this.apiUrl}`, evento).subscribe({
+          next: (response: any) => {
+            const idEvento = response.idEvento; // Obtener el ID del evento recién creado
+            console.log('Evento creado con ID:', idEvento);
+            this.createActividades(idEvento);
+          },
+          error: (error: any) => {
+            console.error('Error al crear el evento:', error);
+          }
+        });
+      }
     }
-  }  
+  }
+
+  createActividades(idEvento: number) {
+    const actividades = this.horarios.value.map((horario: any) => ({
+      nombre: horario.nombre,
+      instalacion: { id: horario.zonaDeportiva }, // Usar ID de la instalación
+      dia: `${horario.dia}T00:00:00`, // Formato ISO
+      evento: { idEvento: idEvento }
+    }));
+
+    this.http.post(`${this.apiUrl}/actividades`, actividades).subscribe({
+      next: (response: any) => {
+        console.log('Actividades creadas:', response);
+      },
+      error: (error: any) => {
+        console.error('Error al crear las actividades:', error);
+      }
+    });
+  }
 }
